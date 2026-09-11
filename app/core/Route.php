@@ -9,6 +9,10 @@ class Route
      */
     const DEFAULT_CONTROLLER = 'index';
     /**
+     * Name of authorization controller
+     */
+    const AUTHORIZATION_CONTROLLER = 'authorization';
+    /**
      * Name of default action
      */
     const DEFAULT_ACTION = 'index';
@@ -23,6 +27,7 @@ class Route
         if(isset($_GET['controller'])){
             $controllerName = strtolower($_GET['controller']);
         }
+        $controllerName = self::checkLogin($controllerName);
         if(isset($_GET['action'])){
             $actionName = strtolower($_GET['action']);
         }
@@ -35,12 +40,30 @@ class Route
             self::notFound();
         }
         $controller->$actionName();
-        //self::caller($controller, $actionName);    // ToDo: delete or use
+        self::caller($controller, $actionName); 
     }
-    // private static function caller(\app\controllers\AbstractController $controller, $action){
-    //     $controller->$action();
-    // }
-
+    /**
+     * Receives controller of certain class and action name, calls this action from this controller
+     * @param AbstractController $controller object of AbstractController or heritor class
+     * @param string $action name of method
+     */
+    private static function caller(\app\controllers\AbstractController $controller, string $action) : void    // ToDo: use exception?
+    {
+        //var_dump($controller, $action);
+        $controller->$action();
+    }
+    /**
+     * Checks if user logged in
+     * @v
+     */
+    private static function checkLogin(string $controller) : string
+    {
+        session_start();
+        if(!isset($_SESSION['logged_in'])){
+            $controller = self::AUTHORIZATION_CONTROLLER;
+        }
+        return $controller;
+    }
     /**
      * Returns url with get params controller, action and some optional variables
      * @var string $controller name of controller, have default value

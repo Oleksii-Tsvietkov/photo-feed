@@ -1,3 +1,3 @@
 <?php
 
-echo 'photo feed';
+include_once "../app/bootstrap.php";
