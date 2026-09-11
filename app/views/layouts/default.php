@@ -9,6 +9,6 @@
     </head>
     <body>
         
-    </body>
     <footer></footer>
+    </body>
 </html>

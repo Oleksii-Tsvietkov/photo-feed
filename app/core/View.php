@@ -29,9 +29,10 @@ class View
         include_once $this->getLayoutPath();
     }
     public function getDescription(string $title){
+        $title = strtolower($title);
         $description = '';
         switch($title){
-            case 'login':
+            case 'welcome':
                 $description = LOGIN_DESCRIPTION;
                 break;
             case 'registration':
@@ -40,7 +41,7 @@ class View
             case 'main':
                 $description = MAIN_DESCRIPTION;
                 break;
-            case 'create':
+            case 'new post':
                 $description = CREATE_DESCRIPTION;
                 break;
             default:
@@ -86,11 +87,11 @@ class View
     // ToDo: add comment
     public function getStorageDir() : string
     {
-        return '/public/storage/';
+        return DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR;
     }
     // ToDo: add comment
     public function getResourcesPath(string $fileName) : string
     {
-        return $this->getStorageDir() . 'resources' . DIRECTORY_SEPARATOR . $filename;
+        return $this->getStorageDir() . 'resources' . DIRECTORY_SEPARATOR . $fileName;
     }
 }

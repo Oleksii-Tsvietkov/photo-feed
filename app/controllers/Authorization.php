@@ -20,9 +20,9 @@ class Authorization extends AbstractController
      */
     public function index() : void
     {
-        if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-            // ToDo: process
-        }
+        // if($_SERVER['REQUEST_METHOD'] !== 'POST'){
+        //     // ToDo: process
+        // }
         // ToDo: maybe check if login
         $this->view->render('login_index', [
             'title' => 'Welcome',
@@ -39,7 +39,7 @@ class Authorization extends AbstractController
         }
         // ToDo: maybe check if login
         $this->view->render('login_registration', [
-            'title' => 'Registration on Photo Feed',
+            'title' => 'Registration',
         ]); 
     }
 

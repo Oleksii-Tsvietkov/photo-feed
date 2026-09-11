@@ -8,12 +8,18 @@
         <title><?= (isset($title) ? $title . ' | ' : '') . SITE_NAME?></title>
     </head>
     <body>
-        <section>
-            <header>
-                <img src="">
-            </header>
-        </section>
-        <?php include_once $this->getPagesPath($viewName)?> 
+        <main>
+            <section>
+                <header>
+                    <img src="<?= $this->getResourcesPath("photo-feed-logo.png")?>" alt="Photo Feed logo">
+                    <h1>See the moments from their lives that your close friends have shared.</h1>
+                </header>
+                <img src="<?= $this->getResourcesPath("promo-ad.png")?>" alt="Photo Feed promo">
+            </section>
+            <div>
+                <?php include_once $this->getPagesPath($viewName)?> 
+            </div>
+        </main>
+        <footer>&copy;Alex Walker</footer>
     </body>
-    <footer>&copy;Alex Walker</footer>
 </html>
