@@ -26,6 +26,7 @@ class Authorization extends AbstractController
         // ToDo: maybe check if login
         $this->view->render('login_index', [
             'title' => 'Welcome',
+            'templateName' => 'login-section',
         ]);
     }
     public function login() : void

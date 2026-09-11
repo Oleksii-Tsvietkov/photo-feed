@@ -19,31 +19,40 @@ html, body{
 }
 main{
     height: 92%;
-    display: flex;
+    display: grid;
 }
 main>div{
-    width: 40%;
     background-color: var(--pg-bcgr);
-    border-left: 1px solid var(--drk-gray);
     box-sizing: border-box;
     padding-inline: 3%;
     padding-block: 6%;
     display: flex;
     flex-direction: column;
+    align-items: center;
     h2{
         font-size: 22px;
     }
+}
+body main:has(section){
+    grid-template-columns: 60% 40%;
+    div{
+        align-items: normal;
+        border-left: 1px solid var(--drk-gray);
+    }
+}
+body:has(section) footer{
+    background-color: var(--body-bcgr);
+    border-top: 1px solid var(--drk-gray);
 }
 footer{
     height: 8%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-top: 1px solid var(--drk-gray);
     box-sizing: border-box;
+    background-color: var(--pg-bcgr);
 }
 section{
-    width: 60%;
     min-width: 500px;
     padding: 3%;
     overflow: hidden;
@@ -108,7 +117,8 @@ main div form{
         background-color: var(--lgh-pg-bcgr);
     }
 }
-main div #registration{
+#registration-page form{
+    min-width: 634px;
     input{
         margin-top: 4px;
         margin-bottom: 15px;
@@ -124,13 +134,14 @@ main div #registration{
     }
 }
 main div #button{
+    width: 26px;
+    height: 26px;
+    display: inline-block;
     border-radius: 50%;
     border-style: solid;
     border-color: transparent;
     background-color: transparent;
-    margin: 0 0 3px 0;
-    width: 26px;
-    height: 26px;
+    margin: 0 0 10px 0;
     img{
         width: 24px;
         height: 24px;
@@ -143,6 +154,7 @@ main div #button:active{
     background-color: var(--drk-gray);
 } 
 main div form{
+    max-width: 634px;
     display: flex;
     flex-direction: column;
 }
