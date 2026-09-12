@@ -83,8 +83,16 @@ class Route
      * Calls header() with Location
      * @var string $url url to redirect, null by default
      */
-    public static function redirect(string $url = null) : never
+    public static function redirect(string $url = null)// : never   // must not have return type
     {
         header('Location: ' . $url ?? '/');
+    }
+    /**
+     * Returns error code 404 
+     */
+    public static function notFound() : never
+    {
+        http_response_code(404);
+        exit();
     }
 }

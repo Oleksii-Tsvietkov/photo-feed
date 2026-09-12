@@ -2,7 +2,7 @@
 
 namespace app\core;
 
-class View
+class View    // ToDo: add static?
 {
     /**
      * Name of layout page, 'default' by default
@@ -93,5 +93,10 @@ class View
     public function getResourcesPath(string $fileName) : string
     {
         return $this->getStorageDir() . 'resources' . DIRECTORY_SEPARATOR . $fileName;
+    }
+    // ToDo: add comment
+    public function getAvatarsPath(string $fileName) : string
+    {
+        return $this->getStorageDir() . 'users_avatars' . DIRECTORY_SEPARATOR . $fileName;
     }
 }

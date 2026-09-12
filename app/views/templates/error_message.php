@@ -1,1 +1,1 @@
-<span id="error"><?= $error ?? ''?></span>
+<span id="error-message"><img src="<?= $this->getResourcesPath("warning-icon.png")?>" alt="Warning icon">&nbsp;<?= $errorMessage?></span>

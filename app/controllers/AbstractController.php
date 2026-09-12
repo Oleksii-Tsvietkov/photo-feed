@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\core\controllerable;
 use app\core\View;
 
-abstract class AbstractController implements controllerable
+abstract class AbstractController implements controllerable    // ToDo: add singletone
 {
     /**
      * Object of model class

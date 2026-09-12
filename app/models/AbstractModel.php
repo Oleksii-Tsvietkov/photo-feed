@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-abstract class AbstractModel
+abstract class AbstractModel    // ToDo: add singletone
 {
     /**
      * Object of class mysqli
@@ -19,7 +19,7 @@ abstract class AbstractModel
     {
         $this->db = new \mysqli($host, $user, $pass, $name);    // without \ class not found
         if($this->db->connect_errno){
-            throw new app\exceptions\ConnectionException('no db connection: ' . $db->connect_error);    // modify
+            throw new app\exceptions\ConnectionException($db->connect_error);    // modify
         }
     }
 }
