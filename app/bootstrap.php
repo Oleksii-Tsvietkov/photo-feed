@@ -11,4 +11,12 @@ spl_autoload_register(function($className){
     return false;
 });
 
-\app\core\Route::init();
+try{
+    \app\core\Route::init();
+}catch (NotAllowedException $e){
+    http_response_code($e->getCode());
+    exit(); //???
+}catch (ConnectionException $e){
+    http_response_code($e->getCode());
+    exit(); //???
+}

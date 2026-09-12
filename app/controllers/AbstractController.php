@@ -8,6 +8,10 @@ use app\core\View;
 abstract class AbstractController implements controllerable
 {
     /**
+     * Object of model class
+     */
+    protected $model;
+    /**
      * Object of class View
      */
     protected View $view;
