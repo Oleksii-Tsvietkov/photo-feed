@@ -7,7 +7,22 @@ use app\models\User;
 
 class Authorization extends AbstractController    // ToDo: create log out
 {
+    /**
+     * Error message, showing if password or login incorrect
+     */
     const LOGIN_ERROR = 'The login information you entered is incorrect.';
+    /**
+     * Error message, showing if passwords not match
+     */
+    const PASSWORD_ERROR = 'Passwords do not match.';
+    /**
+     * Error message, showing if username is already taken
+     */
+    const USERNAME_ERROR = 'This username is already been taken. Please enter another username';    // ToDo: this message must be showing near with login input
+    /**
+     * Error message, showing if account with this email already exists
+     */
+    const EMAIL_ERROR = 'An account with this email already exists. Please enter another email.';    // ToDo: this message must be showing near with email input
     /**
      * Name of login page
      */
@@ -21,76 +36,37 @@ class Authorization extends AbstractController    // ToDo: create log out
         parent::__construct(self::LOGIN_PAGE);
     }
     /**
-     * Calls render method that show authorization page
+     * Checks if whether the user is logged in, retrieves params, adds to them title and template names and calls method to render login page with those params
      */
-    public function index(array $params = []) : void
+    public function index(array $params = []) : void    // ToDo: add view password
     {
-        $data = [
-            'title' => 'Welcome',
-            'templateName' => 'login-section',
-        ];
+        $this->checkLogin();
 
-        if($params !== []){
-            $data += $params;    // ToDo: check
-        }
-        $this->view->render('login_index', $data);
+        $params['title'] = 'Welcome';   
+        $params['templateName'] = 'login-section';   
+
+        $this->view->render('login_index', $params);
     }
-    /*public function login1() : void    
+    /**
+     * Checks method being used and whether the user is logged in, receives user values from post, validates it and trying to find that user in db table, if find - login that user and redirect to default page, if error happen - return to login page with inputed values and error message
+     */
+    public function login() : void
     {
+        $this->checkMethod();
+        $this->checkLogin();
+        
         $identity = filter_input(INPUT_POST, 'identity');
         $pass = filter_input(INPUT_POST, 'pass');
-
-        $errorMessage = $this->validation($identity);
-        if($errorMessage !== ''){
-            $errorMessage = 'Login' . $errorMessage;
-        }else{
-            $errorMessage = $this->validation($pass, 8, 20, true);
-            if($errorMessage !== ''){
-                $errorMessage = 'Password' . $errorMessage;
-            }else{
-                $result = $this->model->find($identity, $pass);
-                if(!is_null($result)){
-                    session_start();
-                    $_SESSION['logged_in'] = true;
-                    $_SESSION['user'] = $result;    
-                    Route::redirect(Route::url());
-                    exit();
-                }else{
-                    $errorMessage = self::LOGIN_ERROR;
-                }
-            }
-        } 
-        $this->index([
-            'errorMessage' => $errorMessage,
-            'identity' => htmlspecialchars($identity, ENT_QUOTES, 'UTF-8'),
-            'pass' => htmlspecialchars($pass, ENT_QUOTES, 'UTF-8'),
-        ]);
-        exit();
-    }*/
-    public function login() : void    // if authorized user come her - log out him?
-    {
-        $identity = filter_input(INPUT_POST, 'identity');
-        $pass = filter_input(INPUT_POST, 'pass');
+        
         try{
-            $error = $this->validation($identity);
-            if(!is_null($error)){
-                throw new \InvalidArgumentException('Login' . $error);
-            }
-
-            $error = $this->validation($pass, 8, 20, true);
-            if(!is_null($error)){
-                throw new \InvalidArgumentException('Password' . $error);
-            }
-
+            $this->checkInputedValue($identity, 'Login');
+            $this->checkInputedValue($pass, 'Password', PASS_MIN, PASS_MAX, true);
+            
             $result = $this->model->find($identity, $pass);
             if(is_null($result)){
                 throw new \InvalidArgumentException(self::LOGIN_ERROR);
             }
-
-            session_start();
-            $_SESSION['logged_in'] = true;
-            $_SESSION['user'] = $result;    
-            Route::redirect(Route::url());
+            $this->loginUser($result);    
         }catch (\InvalidArgumentException $e){
             $this->index([
                 'errorMessage' => $e->getMessage(),
@@ -101,39 +77,128 @@ class Authorization extends AbstractController    // ToDo: create log out
             exit();
         }
     }
-    public function registration() : void
+    /**
+     * Logs the user in and redirect to default page
+     */
+    private function loginUser(array $user) : void
     {
-        //$this->checkMethod();    // fix that problem
-        // ToDo: maybe check if login
         session_start();
-        if(isset($_SESSION['logged_in'])){
+        $_SESSION[LOGIN_FLAG] = true;
+        $_SESSION['user'] = $user;
 
-        }
-        $this->view->render('login_registration', [
-            'title' => 'Registration',
-        ]); 
+        Route::redirect(Route::url());
     }
+    /**
+     * Checks if whether the user is logged in, retrieves params, adds to them title name and calls method to render registration page with those params
+     */
+    public function registration(array $params = []) : void
+    {
+        $this->checkLogin();
+
+        $params['title'] = 'Registration';
+        $this->view->render('login_registration', $params); 
+    }
+    /**
+     * Checks method being used and whether the user is logged in, receives user values from post, validates it, checks if unique and trying to add user in db table, if error happen return to registration page with inputed values and error message, in event of success login new user and redirect to default page
+     */
     public function store() : void
     {
+        $this->checkMethod();
+        $this->checkLogin(); 
 
+        $email = filter_input(INPUT_POST, 'email');
+        $login = filter_input(INPUT_POST, 'login');
+        $pass = filter_input(INPUT_POST, 'pass');
+        $passConf = filter_input(INPUT_POST, 'pass-conf');
+
+        try{
+            $this->checkInputedValue($pass, 'Password', PASS_MIN, PASS_MAX, true);
+            if($pass !== trim($passConf)){    // because trim() used in checkInputedValue()
+                throw new \InvalidArgumentException(self::PASSWORD_ERROR);
+            }
+            $this->checkInputedValue($email, 'Email', EMAIL_MIN, EMAIL_MAX);
+            $this->checkInputedValue($login, 'Login', LOGIN_MIN, LOGIN_MAX);
+            
+            $this->checkUnique($email, self::EMAIL_ERROR);
+            $this->checkUnique($login, self::USERNAME_ERROR);
+
+            $result = $this->model->add($email, $login, $pass);
+            if(is_null($result)){
+                throw new \InvalidArgumentException(self::LOGIN_ERROR);
+            }
+            
+            $this->loginUser($this->model->getUser($login));   
+        }catch (\InvalidArgumentException $e){
+            $this->registration([
+                'errorMessage' => $e->getMessage(),
+                'email' => htmlspecialchars($email, ENT_QUOTES, 'UTF-8'),
+                'login' => htmlspecialchars($login, ENT_QUOTES, 'UTF-8'),
+                'pass' => htmlspecialchars($pass, ENT_QUOTES, 'UTF-8'),
+                'passConf' => htmlspecialchars($passConf, ENT_QUOTES, 'UTF-8'),
+            ]);
+        }finally {
+            exit();
+        }
     }
-    private function checkMethod() // type?
+    /**
+     * Checks if value unique in database table, if not - throw exception with message
+     * @param string|int $value value to be checked, it can be login or email of user
+     * @param string $message, certain message for inputed value
+     */
+    private function checkUnique(string|int $value, string $message) : void
+    {
+        $result = $this->model->getUser($value); 
+        if(!empty($result)){
+            throw new \InvalidArgumentException($message);
+        }
+    }
+    /**
+     * Checks if using post method, if not - throw custom exception
+     */
+    private function checkMethod() : void
     {
         if($_SERVER['REQUEST_METHOD'] !== 'POST'){
             throw new \app\exceptions\NotAllowedException();
         }
     }
     /**
+     * Checks if user already loggin, if so - redirect to default page
+     */
+    private function checkLogin() : void
+    {
+        session_start();
+        if(isset($_SESSION[LOGIN_FLAG])){
+            Route::redirect(Route::url());
+            exit();
+        }
+    }
+    /**
+     * Validates value, if find error - throw exception with him
+     * @param string|int $value value to validate, passed by reference to be changed by trim()
+     * @param string $type name of value, need to exception message
+     * @param int $min min value to validation(), int_min by default
+     * @param int $min max value to validation(), int_max by default
+     * @param bool $isNumber boolean flag for validation()
+     */
+    private function checkInputedValue(string|int &$value, string $type, int $min = PHP_INT_MIN, int $max = PHP_INT_MAX, bool $isNumber = false) : void
+    {
+        $value = trim($value);
+
+        $error = $this->validation($value, $min, $max, $isNumber);
+        if(!is_null($error)){
+            throw new \InvalidArgumentException($type . $error);
+        }
+    }
+    /**
      * Validates value, searches error and return it if find
-     * @param $value value for validation
+     * @param string|int $value value for validation
      * @param int $min optional min value for check, min int by default
      * @param int $max optional max value for check, max int by default
      * @param bool $isNumber boolean flag for special check password
      * @return string error message or empty string
      */
-    private function validation(&$value, int $min = PHP_INT_MIN, int $max = PHP_INT_MAX, bool $isNumber = false) : ?string
+    private function validation(string|int &$value, int $min, int $max, bool $isNumber = false) : ?string
     {
-        trim($value);
         $error = null;
         if(!isset($value)){
             $error = ' is no value';

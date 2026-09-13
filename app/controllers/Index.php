@@ -9,7 +9,7 @@ class Index extends AbstractController
         echo 'Hello';
         session_start();
         var_dump($_SESSION['user']);;
-        unset($_SESSION['logged_in']);
+        unset($_SESSION[LOGIN_FLAG]);
         echo 'Goodbye';
         exit();        
     }

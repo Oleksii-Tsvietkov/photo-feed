@@ -49,7 +49,6 @@ class Route
      */
     private static function caller(\app\controllers\AbstractController $controller, string $action) : void    // ToDo: use exception?
     {
-        //var_dump($controller, $action);
         $controller->$action();
     }
     /**
@@ -59,7 +58,7 @@ class Route
     private static function checkLogin(string $controller) : string
     {
         session_start();
-        if(!isset($_SESSION['logged_in'])){
+        if(!isset($_SESSION[LOGIN_FLAG])){
             $controller = self::AUTHORIZATION_CONTROLLER;
         }
         return $controller;

@@ -26,6 +26,7 @@ class View    // ToDo: add static?
     public function render(string $viewName, array $params = []) : void
     {
         extract($params);
+        unset($params);    // ToDo: check
         include_once $this->getLayoutPath();
     }
     public function getDescription(string $title){
