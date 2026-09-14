@@ -39,7 +39,6 @@ class Route
         if(!method_exists($controller, $actionName)){
             self::notFound();
         }
-        $controller->$actionName();
         self::caller($controller, $actionName); 
     }
     /**
@@ -47,7 +46,7 @@ class Route
      * @param AbstractController $controller object of AbstractController or heritor class
      * @param string $action name of method
      */
-    private static function caller(\app\controllers\AbstractController $controller, string $action) : void    // ToDo: use exception?
+    private static function caller(\app\controllers\AbstractController $controller, string $action) : void
     {
         $controller->$action();
     }
@@ -58,7 +57,7 @@ class Route
     private static function checkLogin(string $controller) : string
     {
         session_start();
-        if(!isset($_SESSION[LOGIN_FLAG])){
+        if(!$_SESSION[LOGIN_FLAG]){
             $controller = self::AUTHORIZATION_CONTROLLER;
         }
         return $controller;

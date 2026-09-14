@@ -2,13 +2,22 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="description" content="<?= $this->getDescription($title)?>">
         <link rel="stylesheet" href="css/style.css">
-        <link rel="icon" href="storage/resources/photo-feed-icon.ico">
-        <meta name="description" content=""><!--add description-->
+        <link rel="icon" href="<?= $this->getResourcesPath("photo-feed-icon.ico")?>">
         <title><?= (isset($title) ? $title . ' | ' : '') . SITE_NAME?></title>
     </head>
     <body>
-        
-    <footer></footer>
+        <main>
+            <?php if(isset($templateName)): ?>
+                <?php include_once $this->getTemplatesPath($templateName)?>
+            <?php endif; ?>
+            <div>
+                <?php if(isset($viewName)): ?>
+                    <?php include_once $this->getPagesPath($viewName)?>
+                <?php endif; ?>
+            </div>
+        </main>
+        <footer>&copy;Alex Walker</footer>
     </body>
 </html>

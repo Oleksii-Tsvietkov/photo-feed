@@ -63,16 +63,16 @@ section{
     header{
         padding-bottom: 5%;
         display: flex;
-        img{
-            width: 90px;
-            height: 90px;
-        }
         h1{
             padding-inline: 5%;
             padding-top: 7%;
             margin: 0;
             font-size: 45px;
             text-align: center;
+        }
+        img{
+            width: 90px;
+            height: 90px;
         }
     }
     img{
@@ -172,4 +172,37 @@ main div form{
     max-width: 634px;
     display: flex;
     flex-direction: column;
+}
+#feed-header{
+    background-color: var(--pg-bcgr);
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 37px 0;
+    div{
+        display: flex;
+        align-items: center;
+    }
+    img{
+        width: 60px;
+        height: 60px;
+        margin-right: 20px;
+    }
+    #right{
+        font-size: 18px;
+        img{
+            border-radius: 50%;
+        }
+        a{
+            margin-left: 30px;
+            padding: 5px 10px;
+            color: var(--txt-color);
+            text-decoration: none;
+            border: 1px solid var(--drk-gray);
+            border-radius: 8px;
+        }
+    } 
+}
+main>div:has(#feed-div){
+    background-color: var(--body-bcgr);
 }

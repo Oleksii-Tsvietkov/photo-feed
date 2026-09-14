@@ -1,0 +1,1 @@
+<img src="<?= $this->getResourcesPath("photo-feed-logo.png")?>" alt="Photo Feed logo">

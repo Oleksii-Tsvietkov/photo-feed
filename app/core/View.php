@@ -7,43 +7,52 @@ class View    // ToDo: add static?
     /**
      * Name of layout page, 'default' by default
      */
-    protected $layout = 'default';
+    protected $layout;
+    /**
+     * Name of default page
+     */
+    const DEFAULT_LAYOUT = 'default';
     /**
      * Initializes class property if parameter not null
      * @var string $layout name of layout page, null by default
      */
-    public function __construct(string $layout = null)
+    public function __construct(string $layout = self::DEFAULT_LAYOUT)    // ToDo: fix constant
     {
         if(!is_null($layout)){
             $this->layout = $layout;
         }
     }
     /**
-     * Receives view name, extract variables from assoc array, and include file returned from class method getLayoutPath()
+     * Receives view name, extract variables from assoc array, and include file with default layout
      * @var string $viewName name of view
      * @var array $params assoc array of variables
      */
     public function render(string $viewName, array $params = []) : void
     {
         extract($params);
-        unset($params);    // ToDo: check
+        unset($params);
         include_once $this->getLayoutPath();
     }
-    public function getDescription(string $title){
-        $title = strtolower($title);
+    /**
+     * Returns certain text depending on inputet title name
+     * @param string $title title name
+     * @return string return site description if title name matches with switch case, else - return empty string
+     */
+    public function getDescription($title) : string    // ToDo: change
+    { 
         $description = '';
         switch($title){
-            case 'welcome':
+            case 'Welcome':
                 $description = LOGIN_DESCRIPTION;
                 break;
-            case 'registration':
+            case 'Registration':
                 $description = REGISTRATION_DESCRIPTION;
                 break;
-            case 'main':
-                $description = MAIN_DESCRIPTION;
-                break;
-            case 'new post':
+            case 'New post':
                 $description = CREATE_DESCRIPTION;
+                break;
+            case null:
+                $description = MAIN_DESCRIPTION;
                 break;
             default:
                 // ToDo: excetion
@@ -72,7 +81,7 @@ class View    // ToDo: add static?
      * @var string $view name of file
      * @return string path of file
      */
-    protected function getPagesPath(string $view) : string    // ToDo: why protected?
+    public function getPagesPath(string $view) : string
     {
         return $this->getViewsDir() . 'pages' . DIRECTORY_SEPARATOR . $view . '_view.php';
     }
@@ -85,19 +94,34 @@ class View    // ToDo: add static?
     {
         return $this->getViewsDir() . 'templates' . DIRECTORY_SEPARATOR . $template . '.php';
     }
-    // ToDo: add comment
+    /**
+     * Returns path to storage directory using Symlink 
+     * @return string path to directory
+     */
     public function getStorageDir() : string
     {
-        return DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR;
+        return DIRECTORY_SEPARATOR . 'shared' . DIRECTORY_SEPARATOR;
     }
-    // ToDo: add comment
+    /**
+     * Returns path to file from images directory
+     * @param string $fileName name of file
+     * @return string path of file
+     */
+    public function getImagesPath(string $fileName) : string
+    {
+        return $this->getStorageDir() . 'images' . DIRECTORY_SEPARATOR . $fileName;
+    }
+    /**
+     * Returns path to file from resources directory
+     * @param string $fileName name of file
+     * @return string path of file
+     */
     public function getResourcesPath(string $fileName) : string
     {
-        return $this->getStorageDir() . 'resources' . DIRECTORY_SEPARATOR . $fileName;
+        return DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . $fileName;
     }
-    // ToDo: add comment
-    public function getAvatarsPath(string $fileName) : string
-    {
-        return $this->getStorageDir() . 'users_avatars' . DIRECTORY_SEPARATOR . $fileName;
-    }
+    // public function getAvatarsPath(string $fileName) : string
+    // {
+    //     return $this->getStorageDir() . 'users_avatars' . DIRECTORY_SEPARATOR . $fileName;
+    // }
 }

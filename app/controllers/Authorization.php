@@ -2,8 +2,8 @@
 
 namespace app\controllers;
 
-use app\core\Route;
 use app\models\User;
+use app\core\Route;
 
 class Authorization extends AbstractController    // ToDo: create log out
 {
@@ -24,28 +24,29 @@ class Authorization extends AbstractController    // ToDo: create log out
      */
     const EMAIL_ERROR = 'An account with this email already exists. Please enter another email.';    // ToDo: this message must be showing near with email input
     /**
-     * Name of login page
+     * Name of default 
      */
-    const LOGIN_PAGE = 'authorization';
+    const DEFAULT_VIEW_PAGE = 'login_index';
+    const DEFAULT_TEMPLATE = 'login_section';
     /**
      * Initializes property and sets to parrents construct name of layout page
      */
     public function __construct()
     {
         $this->model = new User();
-        parent::__construct(self::LOGIN_PAGE);
+        parent::__construct();
     }
     /**
      * Checks if whether the user is logged in, retrieves params, adds to them title and template names and calls method to render login page with those params
      */
-    public function index(array $params = []) : void    // ToDo: add view password
+    public function index(array $params = []) : void
     {
-        $this->checkLogin();
-
+        $this->checkLogin(true);
+        
         $params['title'] = 'Welcome';   
-        $params['templateName'] = 'login-section';   
+        $params['templateName'] = self::DEFAULT_TEMPLATE;   
 
-        $this->view->render('login_index', $params);
+        $this->view->render(self::DEFAULT_VIEW_PAGE, $params);
     }
     /**
      * Checks method being used and whether the user is logged in, receives user values from post, validates it and trying to find that user in db table, if find - login that user and redirect to default page, if error happen - return to login page with inputed values and error message
@@ -53,7 +54,7 @@ class Authorization extends AbstractController    // ToDo: create log out
     public function login() : void
     {
         $this->checkMethod();
-        $this->checkLogin();
+        $this->checkLogin(true);
         
         $identity = filter_input(INPUT_POST, 'identity');
         $pass = filter_input(INPUT_POST, 'pass');
@@ -66,7 +67,7 @@ class Authorization extends AbstractController    // ToDo: create log out
             if(is_null($result)){
                 throw new \InvalidArgumentException(self::LOGIN_ERROR);
             }
-            $this->loginUser($result);    
+            $this->loginUser($result, true);    
         }catch (\InvalidArgumentException $e){
             $this->index([
                 'errorMessage' => $e->getMessage(),
@@ -78,22 +79,11 @@ class Authorization extends AbstractController    // ToDo: create log out
         }
     }
     /**
-     * Logs the user in and redirect to default page
-     */
-    private function loginUser(array $user) : void
-    {
-        session_start();
-        $_SESSION[LOGIN_FLAG] = true;
-        $_SESSION['user'] = $user;
-
-        Route::redirect(Route::url());
-    }
-    /**
      * Checks if whether the user is logged in, retrieves params, adds to them title name and calls method to render registration page with those params
      */
     public function registration(array $params = []) : void
     {
-        $this->checkLogin();
+        $this->checkLogin(true);
 
         $params['title'] = 'Registration';
         $this->view->render('login_registration', $params); 
@@ -104,7 +94,7 @@ class Authorization extends AbstractController    // ToDo: create log out
     public function store() : void
     {
         $this->checkMethod();
-        $this->checkLogin(); 
+        $this->checkLogin(true); 
 
         $email = filter_input(INPUT_POST, 'email');
         $login = filter_input(INPUT_POST, 'login');
@@ -127,7 +117,7 @@ class Authorization extends AbstractController    // ToDo: create log out
                 throw new \InvalidArgumentException(self::LOGIN_ERROR);
             }
             
-            $this->loginUser($this->model->getUser($login));   
+            $this->loginUser($this->model->getUser($login), true);   
         }catch (\InvalidArgumentException $e){
             $this->registration([
                 'errorMessage' => $e->getMessage(),
@@ -141,6 +131,28 @@ class Authorization extends AbstractController    // ToDo: create log out
         }
     }
     /**
+     * Checks whether the user is logged in, if so logout him, ultimately redirect to default page
+     */
+    public function logout() : void
+    {
+        $this->checkLogin(false);
+
+        $this->loginUser(null, false);
+    }
+    /**
+     * Login or logout user, depending on inputed values
+     * @param ?array $user array of user data or null
+     * @param bool $login boolean flag, true if login, false if logout
+     */
+    private function loginUser(?array $user, bool $login) : void
+    {
+        session_start();
+        $_SESSION[LOGIN_FLAG] = $login;
+        $_SESSION['user'] = $user;
+
+        Route::redirect(Route::url());
+    }
+    /**
      * Checks if value unique in database table, if not - throw exception with message
      * @param string|int $value value to be checked, it can be login or email of user
      * @param string $message, certain message for inputed value
@@ -150,26 +162,6 @@ class Authorization extends AbstractController    // ToDo: create log out
         $result = $this->model->getUser($value); 
         if(!empty($result)){
             throw new \InvalidArgumentException($message);
-        }
-    }
-    /**
-     * Checks if using post method, if not - throw custom exception
-     */
-    private function checkMethod() : void
-    {
-        if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-            throw new \app\exceptions\NotAllowedException();
-        }
-    }
-    /**
-     * Checks if user already loggin, if so - redirect to default page
-     */
-    private function checkLogin() : void
-    {
-        session_start();
-        if(isset($_SESSION[LOGIN_FLAG])){
-            Route::redirect(Route::url());
-            exit();
         }
     }
     /**

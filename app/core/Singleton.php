@@ -9,7 +9,7 @@ trait Singleton
      */
     private static $instance;
     /**
-     * Check, if instance of this class dont exists create it, if not - do nothing, finally return instance
+     * Check, if instance of this class dont exists create it, if not - do nothing, ultimately return instance
      * @return static instance of this class 
      */
     public static function getInstance(): static
