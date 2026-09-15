@@ -31,10 +31,13 @@ class Authorization extends AbstractController    // ToDo: create log out
     /**
      * Initializes property and sets to parrents construct name of layout page
      */
-    public function __construct()
+    public static function getInstance() : static    // ToDo: check
     {
-        $this->model = new User();
-        parent::__construct();
+        $instance = parent::getInstance();
+        if(!isset($instance->model)){
+            $instance->model = User::getInstance();
+        }
+        return $instance;
     }
     /**
      * Checks if whether the user is logged in, retrieves params, adds to them title and template names and calls method to render login page with those params
@@ -60,8 +63,8 @@ class Authorization extends AbstractController    // ToDo: create log out
         $pass = filter_input(INPUT_POST, 'pass');
         
         try{
-            $this->checkInputedValue($identity, 'Login');
-            $this->checkInputedValue($pass, 'Password', PASS_MIN, PASS_MAX, true);
+            $identity = $this->validateInputedValue($identity, 'Login');
+            $pass = $this->validateInputedValue($pass, 'Password', PASS_MIN, PASS_MAX, true);
             
             $result = $this->model->find($identity, $pass);
             if(is_null($result)){
@@ -102,12 +105,12 @@ class Authorization extends AbstractController    // ToDo: create log out
         $passConf = filter_input(INPUT_POST, 'pass-conf');
 
         try{
-            $this->checkInputedValue($pass, 'Password', PASS_MIN, PASS_MAX, true);
-            if($pass !== trim($passConf)){    // because trim() used in checkInputedValue()
+            $pass = $this->validateInputedValue($pass, 'Password', PASS_MIN, PASS_MAX, true);
+            if($pass !== trim($passConf)){    // because trim() used in validateInputedValue()
                 throw new \InvalidArgumentException(self::PASSWORD_ERROR);
             }
-            $this->checkInputedValue($email, 'Email', EMAIL_MIN, EMAIL_MAX);
-            $this->checkInputedValue($login, 'Login', LOGIN_MIN, LOGIN_MAX);
+            $email = $this->validateInputedValue($email, 'Email', EMAIL_MIN, EMAIL_MAX);
+            $login = $this->validateInputedValue($login, 'Login', LOGIN_MIN, LOGIN_MAX);
             
             $this->checkUnique($email, self::EMAIL_ERROR);
             $this->checkUnique($login, self::USERNAME_ERROR);
@@ -166,20 +169,25 @@ class Authorization extends AbstractController    // ToDo: create log out
     }
     /**
      * Validates value, if find error - throw exception with him
-     * @param string|int $value value to validate, passed by reference to be changed by trim()
+     * @param string|int $value value to validate, changed by trim(), strtolower(), 
      * @param string $type name of value, need to exception message
      * @param int $min min value to validation(), int_min by default
      * @param int $min max value to validation(), int_max by default
      * @param bool $isNumber boolean flag for validation()
+     * @return string|int if exception not thrown - returns inputed value after change and validation
      */
-    private function checkInputedValue(string|int &$value, string $type, int $min = PHP_INT_MIN, int $max = PHP_INT_MAX, bool $isNumber = false) : void
+    private function validateInputedValue(string|int $value, string $type, int $min = PHP_INT_MIN, int $max = PHP_INT_MAX, bool $isNumber = false) : string|int
     {
         $value = trim($value);
+        if($type !== 'Password'){
+            $value = strtolower($value);
+        }
 
         $error = $this->validation($value, $min, $max, $isNumber);
         if(!is_null($error)){
             throw new \InvalidArgumentException($type . $error);
         }
+        return $value;
     }
     /**
      * Validates value, searches error and return it if find

@@ -9,7 +9,7 @@ class Photo extends AbstractModel    // rename
      */
     private const TABLE_NAME = "posts";
 
-    public function getPosts() : array //and name and photo of post user
+    public function getPosts()// : array //and name and photo of post user
     {
         $posts = [];
         "SELECT u.image, u.login AS 'username', p.image, p.description, p.published_at AS 'date' FROM posts AS p LEFT JOIN users AS u ON p.user_id = u.id ORDER BY p.published_at DESC LIMIT 5;";

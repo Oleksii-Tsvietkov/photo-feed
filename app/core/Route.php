@@ -20,7 +20,7 @@ class Route
      * Calls certain method from certain class depending on get params if it exists, else - return error code,
      * if get params not set - use default values
      */
-    public static function init()
+    public static function init() : void
     {
         $controllerName = self::DEFAULT_CONTROLLER;
         $actionName = self::DEFAULT_ACTION;
@@ -35,7 +35,8 @@ class Route
         if(!class_exists($controllerClass)){
             self::notFound();
         }
-        $controller = new $controllerClass();
+        $controller = $controllerClass::getInstance();
+        
         if(!method_exists($controller, $actionName)){
             self::notFound();
         }
@@ -57,7 +58,7 @@ class Route
     private static function checkLogin(string $controller) : string
     {
         session_start();
-        if(!$_SESSION[LOGIN_FLAG]){
+        if(!isset($_SESSION[LOGIN_FLAG]) || !$_SESSION[LOGIN_FLAG]){    // ToDo: check
             $controller = self::AUTHORIZATION_CONTROLLER;
         }
         return $controller;

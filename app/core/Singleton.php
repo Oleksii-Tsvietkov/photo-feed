@@ -26,6 +26,6 @@ trait Singleton
     private function __clone(){}
     public function __wakeup()
     {
-        exit('Singleton');
+        throw new \Exception("Cannot unserialize a singleton.");    // ToDo: change
     }
 }
