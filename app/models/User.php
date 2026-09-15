@@ -31,13 +31,14 @@ class User extends AbstractModel
     {
         $user = [];
 
-        $query = $this->db->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE login=? OR email=?;");
-        $query->bind_param("ss", $identity, $identity);
-
-        if($query->execute()){
-            $result = $query->get_result();
-            $user = $result->fetch_assoc();    //ToDo: if find users more than one?
+        $query = $this->db->prepare("SELECT * FROM " . self::TABLE_NAME . " WHERE login = ? OR email = ?;");
+        if($query->bind_param("ss", $identity, $identity)){
+            if($query->execute()){
+                $result = $query->get_result();
+                $user = $result->fetch_assoc();    //ToDo: if find users more than one?
+            }
         }
+
         return $user;  
     }
     /**

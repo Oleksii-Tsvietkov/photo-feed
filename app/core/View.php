@@ -33,6 +33,46 @@ class View    // ToDo: add static?
         unset($params);
         include_once $this->getLayoutPath();
     }
+    public function getDateTime(string $date)
+    {
+        $correctDate = new \DateTime($date);
+        return $correctDate->format('Y-m-d\TH:i');
+    }
+    public function getTextDate(string $date)
+    {
+        $dateTime = new \DateTime($date);
+        $formatter = new \IntlDateFormatter(
+            'en_EN', 
+            \IntlDateFormatter::NONE, 
+            \IntlDateFormatter::NONE, 
+            null, 
+            null, 
+            'd MMMM y'
+        );
+        return $formatter->format($dateTime); 
+    }
+    public function getTimeInterval(string $date) : string
+    {
+        $inputDate = new \DateTime($date);
+        $currentDate = new \DateTime();    // ToDo: fix
+
+        $interval = date_diff($inputDate, $currentDate);
+
+        $returnInterval = '';
+        if($interval->d > 7){
+            $returnInterval = intval($interval->d / 7) . ' week.';
+        }else if($interval->d >= 1){
+            $returnInterval = $interval->d . ' d.';
+        }else if($interval->h >= 1){
+            $returnInterval = $interval->h . ' h.';
+        }else if($interval->m >= 1){
+            $returnInterval = $interval->h . ' m.';
+        }else {
+            $returnInterval = $interval->s . ' s.';
+        }
+        
+        return $returnInterval;   // ToDo: fix
+    }
     /**
      * Returns certain text depending on inputet title name
      * @param string $title title name

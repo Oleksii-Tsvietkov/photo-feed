@@ -11,7 +11,7 @@ class Index extends AbstractController
      */
     const DEFAULT_VIEW_PAGE = 'index_index';
     /**
-     * Name of defaut template file
+     * Name of default template file
      */
     const DEFAULT_TEMPLATE = 'feed_header';
     
@@ -29,11 +29,11 @@ class Index extends AbstractController
 
         $params = [];
         
-        /*$params['posts'] = $this->model->getPosts();*/
         session_start();
+        $params['posts'] = $this->model->getPosts($_SESSION['user']['id'], 0, 5);    // ToDo: check session?
         $params['user'] = $_SESSION['user'];
         $params['title'] = '';
-        $params['templateName'] = self::DEFAULT_TEMPLATE;
+        $params['templateName'] = self::DEFAULT_TEMPLATE;    // ToDo: add all to array
 
         $this->view->render(self::DEFAULT_VIEW_PAGE, $params);
     }
