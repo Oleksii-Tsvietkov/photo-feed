@@ -14,7 +14,7 @@ class Index extends AbstractController
      * Name of default template file
      */
     const DEFAULT_TEMPLATE = 'feed_header';
-    
+
     public static function getInstance() : static
     {
         $instance = parent::getInstance();
@@ -27,13 +27,16 @@ class Index extends AbstractController
     {
         $this->checkLogin(false);
 
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        extract($this->model->getLimit($currentPage));
+
         $params = [];
-        
+        $params['posts'] = $this->model->getPosts($_SESSION['user']['id'], $offset, $limit);
         session_start();
-        $params['posts'] = $this->model->getPosts($_SESSION['user']['id'], 0, 5);    // ToDo: check session?
         $params['user'] = $_SESSION['user'];
-        $params['title'] = '';
         $params['templateName'] = self::DEFAULT_TEMPLATE;    // ToDo: add all to array
+        $params['currentPage'] = $currentPage;
+        $params['pagesCount'] = $this->model->getPagesCount();
 
         $this->view->render(self::DEFAULT_VIEW_PAGE, $params);
     }

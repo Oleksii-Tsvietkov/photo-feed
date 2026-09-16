@@ -33,6 +33,10 @@ class View    // ToDo: add static?
         unset($params);
         include_once $this->getLayoutPath();
     }
+    public function getLike(bool $like) : string    // ToDo: change png to svg because theme can be changed
+    {
+        return $like ? $this->getResourcesPath("like-pressed.png") : $this->getResourcesPath("like-default.png");
+    }
     public function getDateTime(string $date)
     {
         $correctDate = new \DateTime($date);
@@ -54,7 +58,7 @@ class View    // ToDo: add static?
     public function getTimeInterval(string $date) : string
     {
         $inputDate = new \DateTime($date);
-        $currentDate = new \DateTime();    // ToDo: fix
+        $currentDate = new \DateTime();    // ToDo: fix time zone
 
         $interval = date_diff($inputDate, $currentDate);
 
