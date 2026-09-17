@@ -33,6 +33,14 @@ class View    // ToDo: add static?
         unset($params);
         include_once $this->getLayoutPath();
     }
+    public function getLikeUrl(int $id, int $page, int $count, bool $status, string $anchor) : string
+    {
+        return Route::url("index", "like", ["id" => $id, "page" => $page, "count" => $count, "status" => $status, "anchor" => "$anchor"]);
+    }
+    public function getPageUrl($page)
+    {
+        return Route::url("index", "index", ["page" => $page]);
+    }
     public function getLike(bool $like) : string    // ToDo: change png to svg because theme can be changed
     {
         return $like ? $this->getResourcesPath("like-pressed.png") : $this->getResourcesPath("like-default.png");

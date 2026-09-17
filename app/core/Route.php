@@ -74,7 +74,7 @@ class Route
     {
         $getParams = '';
         foreach($params as $param => $value){
-            $getParams .= $param . '=' . $value . '&';
+            $getParams .= '&' . $param . '=' . $value;    // ToDo: & - was changed, check
         }
         return '/?controller=' . strtolower($controller) . '&action=' . strtolower($action) . '&' . $getParams;
     }
@@ -92,6 +92,14 @@ class Route
     public static function notFound() : never
     {
         http_response_code(404);
+        exit();
+    }
+    /**
+     * Returns error code 402 
+     */
+    public static function unprocessableEntity() : never
+    {
+        http_response_code(422);
         exit();
     }
 }

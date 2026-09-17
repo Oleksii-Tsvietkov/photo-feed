@@ -9,17 +9,29 @@
     --lgh-blue: #2d83ed;
     --drk-blue: #133b6e;
 }
+:any-link{
+    text-decoration: none;
+    color: inherit;
+}
 html, body{
     margin: 0;
     padding: 0;
     background-color: var(--body-bcgr);
     color: var(--txt-clr);
     width: 100%;
-    height: fit-content;
+    min-height: 100vh;
+}
+body{
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+body:has(header+main+footer){
+    grid-template-rows: auto 1fr auto;
 }
 main{
-    height: 92%;
     display: grid;
+    justify-content: center;
 }
 main>div{
     background-color: var(--pg-bcgr);
@@ -125,12 +137,14 @@ main div form{
         margin-top: 100px;
         border: 1px solid var(--blue);
         color: var(--blue);
-        text-decoration: none;
         justify-content: center;
     }
     #registr-button:hover{
         background-color: var(--lgh-pg-bcgr);
     }
+}
+main:has(#registration-page){
+    justify-content: stretch;
 }
 #registration-page form{
     min-width: 634px;
@@ -173,16 +187,16 @@ main div form{
     display: flex;
     flex-direction: column;
 }
+#feed-header>div, #feed-header>a{
+    display: flex;
+    align-items: center;
+}
 #feed-header{
     background-color: var(--pg-bcgr);
     height: 75px;
     display: flex;
     justify-content: space-between;
     padding: 0 37px 0;
-    div{
-        display: flex;
-        align-items: center;
-    }
     img{
         width: 40px;
         height: 40px;
@@ -197,21 +211,20 @@ main div form{
             margin-left: 30px;
             padding: 0 12px;
             color: var(--txt-color);
-            text-decoration: none;
             border: 1px solid var(--drk-gray);
             border-radius: 8px;
         }
     } 
 }
 main>#feed-div{
+    width: 468px;
+    min-height: 645px;    /* ToDo: check */
     background-color: var(--body-bcgr);
+    padding: 50px 0 0 0;
 }
 article{
-    width: 468px; 
     display: flex;
     flex-direction: column;
-    img{
-    }
     #head{
         height: fit-content;
         padding: 0 14px 12px;
@@ -227,6 +240,7 @@ article{
         }
         time{
             color: var(--gray);
+            line-height: 18px;
         }
     }
     #bottom{
@@ -236,7 +250,7 @@ article{
             display: flex;
             width: fit-content;
             align-items: center;
-            font-size: 19px;
+            font-size: 19px;        
         }
         p{
             margin: 10px 0 0 0;
@@ -249,5 +263,43 @@ article>img{
     margin-right: 5px;
 }
 #like{
-    height: 24px;
+    img{
+        height: 24px;
+    }
+    color: var(--txt-clr);
+    display: flex;
+    align-items: center;
 }
+nav{
+    width: stretch;
+    display: flex;
+    justify-content: center;
+    height: 55px;    /* ToDo: fix nav height*/
+    overflow: hidden;
+    align-items: center;
+    padding: 2px;
+    ul{
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    li{
+        b{
+            color: var(--drk-gray);
+        }
+        a, b{
+            padding: 13px 18px;
+            margin-inline: 3px;
+        }
+        a{
+            color: var(--txt-clr);
+            border: 1px solid var(--drk-gray);
+            border-radius: 50%;
+            box-sizing: border-box;
+        }
+        a:hover{
+            background-color: var(--drk-gray);
+        }
+    }
+} 
