@@ -8,16 +8,16 @@
         <title><?= (isset($title) ? $title . ' | ' : '') . SITE_NAME?></title>
     </head>
     <body>
-        <?php if(isset($title)): // temporary?>
+        <?php if(isset($title)): // ToDo: temporary solution?>
             <main>
         <?php endif; ?>
             <?php if(isset($templateName)): ?>
                 <?php include_once $this->getTemplatesPath($templateName)?>
             <?php endif; ?>
-            <?php if(isset($viewName)): ?>
-                <?php include_once $this->getPagesPath($viewName)?>
+            <?php if(isset($pageName)): ?>
+                <?php include_once $this->getPagesPath($pageName)?>
             <?php endif; ?>
-        <?php if(isset($title)): // temporary?>
+        <?php if(isset($title)): // ToDo: temporary solution?>
             </main>
         <?php endif; ?>
         <footer>&copy;Alex Walker</footer>

@@ -24,10 +24,17 @@ class Authorization extends AbstractController    // ToDo: create log out
      */
     const EMAIL_ERROR = 'An account with this email already exists. Please enter another email.';    // ToDo: this message must be showing near with email input
     /**
-     * Name of default 
+     * Name of default page
      */
-    const DEFAULT_VIEW_PAGE = 'login_index';
-    const DEFAULT_TEMPLATE = 'login_section';
+    const DEFAULT_PAGE = 'authorization_index';
+    /**
+     * Name of default page
+     */
+    const REGISTRATION_PAGE = 'authorization_registration';
+    /**
+     * Name of default template
+     */
+    const DEFAULT_TEMPLATE = 'authorization_section';
     /**
      * Initializes property and sets to parrents construct name of layout page
      */
@@ -49,7 +56,7 @@ class Authorization extends AbstractController    // ToDo: create log out
         $params['title'] = 'Welcome';   
         $params['templateName'] = self::DEFAULT_TEMPLATE;   
 
-        $this->view->render(self::DEFAULT_VIEW_PAGE, $params);
+        $this->view->render(self::DEFAULT_PAGE, $params);
     }
     /**
      * Checks method being used and whether the user is logged in, receives user values from post, validates it and trying to find that user in db table, if find - login that user and redirect to default page, if error happen - return to login page with inputed values and error message
@@ -89,7 +96,7 @@ class Authorization extends AbstractController    // ToDo: create log out
         $this->checkLogin(true);
 
         $params['title'] = 'Registration';
-        $this->view->render('login_registration', $params); 
+        $this->view->render(self::REGISTRATION_PAGE, $params); 
     }
     /**
      * Checks method being used and whether the user is logged in, receives user values from post, validates it, checks if unique and trying to add user in db table, if error happen return to registration page with inputed values and error message, in event of success login new user and redirect to default page

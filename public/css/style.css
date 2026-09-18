@@ -92,9 +92,14 @@ section{
         width: 450px;
     }
 }  
-main div form{
-    span{
+#error-message{
         margin-bottom: 30px;
+        height: 40px;
+        border: 1px solid var(--drk-gray);
+        border-radius: 16px;
+        width: auto;
+        display: flex;
+        align-items: center;
         img{
             margin-left: 20px;
             margin-right: 5px;
@@ -102,19 +107,17 @@ main div form{
             height: 17px;
         }
     }
-    span, #registr-button, input{
+main div form{
+    #registr-button, input{
         border-radius: 16px;
     }
-    span, #registr-button{
+    #registr-button{
         width: auto;
         display: flex;
         align-items: center;
     }
-    span, input{
-        height: 40px;
-        border: 1px solid var(--drk-gray);
-    }
     input{
+        border: 1px solid var(--drk-gray);
         height: 60px;
         background-color: var(--pg-bcgr);
         margin-top: 12px;
@@ -162,21 +165,16 @@ main:has(#registration-page){
         filter: invert(1);
     }
 }
-main div #button{
-    width: 26px;
-    height: 26px;
+#button{
     display: inline-block;
-    border-radius: 50%;
-    border-style: solid;
-    border-color: transparent;
-    background-color: transparent;
-    margin: 0 0 10px 0;
+    margin: 10px 0;
     img{
         width: 24px;
         height: 24px;
+        border-radius: 50%;
     }
 }
-main div #button:hover{
+#button:hover img{
     background-color: var(--gray);
 } 
 main div #button:active{
@@ -208,11 +206,19 @@ main div form{
             border-radius: 50%;
         }
         a{
-            margin-left: 30px;
             padding: 0 12px;
             color: var(--txt-color);
             border: 1px solid var(--drk-gray);
             border-radius: 8px;
+        }
+        #add-button{
+            padding: 0;
+            border: none;
+            font-size: 41px;
+            margin-inline: 15px;
+        }
+        a:hover{
+            background-color: var(--drk-gray);
         }
     } 
 }
@@ -303,3 +309,60 @@ nav{
         }
     }
 } 
+main:has(#creation-header){
+    grid-template-rows: auto 1fr;
+    justify-content: stretch;
+    text-align: center;
+}
+#creation-header{
+    height: 80px;
+}
+#adding-logo{
+    text-align: center;
+    img{
+        width: 95px;
+    }
+}
+.btn{
+    box-sizing: border-box;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--lgh-blue);
+}
+.btn:hover{
+    background-color: var(--blue);
+}
+.btn:active{
+    transform: scale(0.98);
+}
+#create-post{
+    display: flex;
+    padding: 0;
+    form{
+        align-items: center;
+        input[type="file"]{
+            display: none;
+        }
+        img{
+            width: stretch;
+            margin-block: 30px;
+        }
+    }
+    label[for="image"]{
+        padding: 7px 30px;
+    }
+    input[type="submit"]{
+        display: none; 
+        height: 32px; 
+        padding: 0 25px;
+        background-color: var(--lgh-blue);
+    }
+    input[type="text"]{
+        width: stretch;
+    }
+    form:has(input[type="file"]:valid) {
+        input[type="submit"]{
+            display: block;  
+        }
+    }
+}

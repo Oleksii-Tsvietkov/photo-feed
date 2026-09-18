@@ -50,11 +50,18 @@ abstract class AbstractController implements controllerable
     /**
      * Checks if using post method, if not - throw custom exception
      */
-    protected function checkMethod() : void
+    protected function checkMethod(bool $method = true) : void    //ToDo: change description
     {
-        if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-            throw new \app\exceptions\NotAllowedException();
+        if($method){
+            if($_SERVER['REQUEST_METHOD'] !== 'POST'){
+                throw new \app\exceptions\NotAllowedException();
+            }
+        }else{
+            if($_SERVER['REQUEST_METHOD'] !== 'GET'){
+                throw new \app\exceptions\NotAllowedException();
+            }
         }
+        
     }
     /**
      * Validates value, if find error - throw exception with him

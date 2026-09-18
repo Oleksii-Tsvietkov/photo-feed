@@ -24,10 +24,10 @@ class View    // ToDo: add static?
     }
     /**
      * Receives view name, extract variables from assoc array, and include file with default layout
-     * @var string $viewName name of view
+     * @var string $pageName name of page
      * @var array $params assoc array of variables
      */
-    public function render(string $viewName, array $params = []) : void
+    public function render(string $pageName, array $params = []) : void
     {
         extract($params);
         unset($params);
@@ -130,12 +130,12 @@ class View    // ToDo: add static?
     }
     /**
      * Returns path to file from pages directory
-     * @var string $view name of file
+     * @var string $page name of page file
      * @return string path of file
      */
-    public function getPagesPath(string $view) : string
+    public function getPagesPath(string $page) : string
     {
-        return $this->getViewsDir() . 'pages' . DIRECTORY_SEPARATOR . $view . '_view.php';
+        return $this->getViewsDir() . 'pages' . DIRECTORY_SEPARATOR . $page . '_view.php';
     }
     /**
      * Returns path to file from templates directory
