@@ -26,14 +26,14 @@
                         <li><a href="<?= $this->getPageUrl(1)?>">«</a></li> 
                         <li><a href="<?= $this->getPageUrl($currentPage - 1)?>">‹</a></li>
                     <?php endif; ?>
-                    <?php for($i = 1; $i <= $pagesCount && $i < $currentPage + 9; ++$i): ?><!-- ToDo: fix (number of showing buttons)-->
+                    <?php for($i = $startPage; $i <= $endPage; ++$i): ?><!-- ToDo: fix (number of showing buttons)-->
                         <li>
                             <?= $i != $currentPage ? "<a href=" . $this->getPageUrl($i) . ">$i</a>" : "<b>$i</b>"?>
                         </li>        
                     <?php endfor; ?>
                     <?php if($currentPage != $pagesCount): ?>
-                        <li><a href="<?= $this->getPageUrl($pagesCount)?>">»</a></li>
                         <li><a href="<?= $this->getPageUrl($currentPage + 1)?>">›</a></li>
+                        <li><a href="<?= $this->getPageUrl($pagesCount)?>">»</a></li>
                     <?php endif; ?>
                 </ul>
             <?php endif; ?>

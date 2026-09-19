@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Post;
+use app\core\Route;
 
 class Index extends AbstractController
 {
@@ -22,6 +23,15 @@ class Index extends AbstractController
      * Name of creation template file
      */
     const CREATION_TEMPLATE = 'creation_header';
+
+    /**
+     * Error message, showing if error happened during add like
+     */
+    const LIKE_ERROR = 'Some problems during add like.';
+    /**
+     * Error message, showing if error happened during add post
+     */
+    const POST_ERROR = 'Some problems during add post.';
 
     public static function getInstance() : static
     {
@@ -44,12 +54,15 @@ class Index extends AbstractController
         }
         
         extract($this->model->getLimit($currentPage));
+        extract($this->model->getButtonsCount($currentPage));
         $params['posts'] = $this->model->getPosts($_SESSION['user']['id'], $offset, $limit);
         session_start();
         $params['user'] = $_SESSION['user'];
         $params['templateName'] = self::DEFAULT_TEMPLATE;    // ToDo: add all to array
         $params['currentPage'] = $currentPage;
         $params['pagesCount'] = $pagesCount ?? $this->model->getPagesCount();
+        $params['startPage'] = $start;
+        $params['endPage'] = $end;
         $this->view->render(self::DEFAULT_PAGE, $params);
     }
     public function like() : void    /* ToDo: maybe just change color. change like status only after page updating */
@@ -64,19 +77,19 @@ class Index extends AbstractController
         $anchor = $_GET['anchor'];
 
         try{
-            $postId = $this->validateInputedValue($postId, 'postId', 0, PHP_INT_MAX, true);
-            $pagesCount = $this->validateInputedValue($pagesCount, 'pagesCount', 1, PHP_INT_MAX, true);    // ToDo: change max value?
+            $postId = $this->validateInputedValue($postId, 'postId', false, 0, PHP_INT_MAX, true);
+            $pagesCount = $this->validateInputedValue($pagesCount, 'pagesCount', false, 1, PHP_INT_MAX, true);    // ToDo: change max value?
             
             $likeStatus = intval($likeStatus);
             if($likeStatus != 1 && $likeStatus != 0){
                 throw new InvalidArgumentException('Status not boolean');
             }
             $likeFlag = boolval($likeStatus); 
-            $currentPage = $this->validateInputedValue($currentPage, 'currentPage', 1, $pagesCount, true);
+            $currentPage = $this->validateInputedValue($currentPage, 'currentPage', false, 1, $pagesCount, true);
 
             session_start();
             if(!$this->model->like($postId, $likeFlag, $_SESSION['user']['id'])){
-                // ToDo: process       
+                throw new InvalidArgumentException(self::LIKE_ERROR);
             }
             $this->index([
                 "currentPage" => intval($currentPage),
@@ -85,9 +98,8 @@ class Index extends AbstractController
             ]);
         }catch (\InvalidArgumentException $e){
             Route::unprocessibleEntity();    // ToDo: replace to response?
-        }finally{
-            exit();
         }
+        exit();
     }
     public function create(array $params = []) : void
     {
@@ -114,9 +126,36 @@ class Index extends AbstractController
             $this->create([
                 'errorMessage' => $e->getMessage(),
             ]);
-        }finally{
-            exit();
         }
+        exit();
+    }
+    public function store() : void
+    {
+        $this->checkMethod();
+        $this->checkLogin(false);
+
+        // ToDo: validate input file if it not almost loaded
+        $image = filter_input(INPUT_POST, 'image');  
+        $description = null;  
+        try{
+            if(isset($_POST['description']) && !empty($_POST['description'])){
+                $description = $_POST['description'];
+                $description = $this->validateInputedValue($description, 'Description', false, 1, DESCRIPTION_MAX);
+            }
+            session_start();
+            $userId = $_SESSION['user']['id'];
+
+            $imagePath = $this->view->getImagesPath($image);
+            if(!$this->model->add($userId, $imagePath, $description)){
+                throw new InvalidArgumentException(self::POST_ERROR);
+            }   
+            Route::redirect(Route::url());
+        }catch (\InvalidArgumentException $e){
+            $this->create([
+                'errorMessage' => $e->getMessage(),
+            ]);
+        }
+        exit();
     }
     protected function validateFile(callable $path, string $name) : array
     {

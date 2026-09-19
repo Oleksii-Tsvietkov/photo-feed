@@ -70,8 +70,8 @@ class Authorization extends AbstractController    // ToDo: create log out
         $pass = filter_input(INPUT_POST, 'pass');
         
         try{
-            $identity = $this->validateInputedValue($identity, 'Login');
-            $pass = $this->validateInputedValue($pass, 'Password', PASS_MIN, PASS_MAX, true);
+            $identity = $this->validateInputedValue($identity, 'Login', true);
+            $pass = $this->validateInputedValue($pass, 'Password', false, PASS_MIN, PASS_MAX, true);
             
             $result = $this->model->find($identity, $pass);
             if(is_null($result)){
@@ -84,9 +84,8 @@ class Authorization extends AbstractController    // ToDo: create log out
                 'identity' => htmlspecialchars($identity, ENT_QUOTES, 'UTF-8'),
                 'pass' => htmlspecialchars($pass, ENT_QUOTES, 'UTF-8'),
             ]);
-        }finally{
-            exit();
         }
+        exit();
     }
     /**
      * Checks if whether the user is logged in, retrieves params, adds to them title name and calls method to render registration page with those params
@@ -112,18 +111,17 @@ class Authorization extends AbstractController    // ToDo: create log out
         $passConf = filter_input(INPUT_POST, 'pass-conf');
 
         try{
-            $pass = $this->validateInputedValue($pass, 'Password', PASS_MIN, PASS_MAX, true);
+            $pass = $this->validateInputedValue($pass, 'Password', false, PASS_MIN, PASS_MAX, true);
             if($pass !== trim($passConf)){    // because trim() used in validateInputedValue()
                 throw new \InvalidArgumentException(self::PASSWORD_ERROR);
             }
-            $email = $this->validateInputedValue($email, 'Email', EMAIL_MIN, EMAIL_MAX);
-            $login = $this->validateInputedValue($login, 'Login', LOGIN_MIN, LOGIN_MAX);
+            $email = $this->validateInputedValue($email, 'Email', true, EMAIL_MIN, EMAIL_MAX);
+            $login = $this->validateInputedValue($login, 'Login', true, LOGIN_MIN, LOGIN_MAX);
             
             $this->checkUnique($email, self::EMAIL_ERROR);
             $this->checkUnique($login, self::USERNAME_ERROR);
 
-            $result = $this->model->add($email, $login, $pass);
-            if(is_null($result)){
+            if($this->model->add($email, $login, $pass)){
                 throw new \InvalidArgumentException(self::LOGIN_ERROR);
             }
             
@@ -136,9 +134,8 @@ class Authorization extends AbstractController    // ToDo: create log out
                 'pass' => htmlspecialchars($pass, ENT_QUOTES, 'UTF-8'),
                 'passConf' => htmlspecialchars($passConf, ENT_QUOTES, 'UTF-8'),
             ]);
-        }finally {
-            exit();
         }
+        exit();
     }
     /**
      * Checks whether the user is logged in, if so logout him, ultimately redirect to default page

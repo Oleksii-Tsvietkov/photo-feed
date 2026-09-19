@@ -127,7 +127,7 @@ main div form{
         padding: 10px;
     }
     input[type="submit"]{
-        margin-top: 22px;
+        margin: 22px 0 10px;
         background-color: var(--blue);
         height: 40px;
     }
@@ -231,6 +231,7 @@ main>#feed-div{
 article{
     display: flex;
     flex-direction: column;
+    padding-top: 15px;
     #head{
         height: fit-content;
         padding: 0 14px 12px;
@@ -266,11 +267,13 @@ article{
 article>img{
     object-fit: cover;
     width: 100%;
-    margin-right: 5px;
 }
 #like{
     img{
         height: 24px;
+    }
+    img:active{
+        transform: scale(0.90);       
     }
     color: var(--txt-clr);
     display: flex;
@@ -336,8 +339,9 @@ main:has(#creation-header){
     transform: scale(0.98);
 }
 #create-post{
-    display: flex;
+    /*display: flex;*/
     padding: 0;
+    justify-content: center;
     form{
         align-items: center;
         input[type="file"]{
@@ -345,7 +349,8 @@ main:has(#creation-header){
         }
         img{
             width: stretch;
-            margin-block: 30px;
+            /*margin-block: 30px;*/
+            max-height: 600px;
         }
     }
     label[for="image"]{
@@ -360,7 +365,7 @@ main:has(#creation-header){
     input[type="text"]{
         width: stretch;
     }
-    form:has(input[type="file"]:valid) {
+    form:has(input[type="file"]:valid), form:has(img) {
         input[type="submit"]{
             display: block;  
         }

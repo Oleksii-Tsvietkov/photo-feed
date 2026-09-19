@@ -10,6 +10,7 @@ class Post extends AbstractModel    // rename
     private const TABLE_NAME = "posts";
 
     private const PHOTO_PER_PAGE = 5;
+    private const BUTTONS_PER_PAGE = 10;
 
     private int $postsCount;
     private int $firstPagePostsCount;
@@ -35,6 +36,17 @@ class Post extends AbstractModel    // rename
             }
         }
         return $posts;
+    }
+    public function getButtonsCount(int $currentPage) : array
+    {
+        $currentBlock = ceil($currentPage / self::BUTTONS_PER_PAGE);
+        $start = ($currentBlock - 1) * self::BUTTONS_PER_PAGE + 1;
+        $end = $currentBlock * self::BUTTONS_PER_PAGE;
+        $end = $end < $this->pagesCount ? $end : $this->pagesCount;
+        return [
+            'start' => $start, 
+            'end' => $end,
+        ];
     }
     public function getPagesCount() : int
     {
@@ -70,9 +82,21 @@ class Post extends AbstractModel    // rename
         }
         return $count;
     }
-    public function addPost()
+    public function add(int $userId, string $image, ?string $description) : bool    // ToDo: maybe change to adding null
     {
-        "INSERT INTO posts(user_id, image, description) VALUES(13, '/shared/storage/images/IMG_20251221_002248.jpg', 'ботанический сад'), (1, '/shared/storage/images/IMG_20260524_211533.jpg', 'Днепровская набережная'), (1, '/shared/storage/images/IMG_20260803_200419.jpg', null), (1, '/shared/storage/images/IMG_20260623_115408.jpg', null), (13, '/shared/storage/images/scan0036.jpg', '#chaika-II #kodakvision2250d'), (13, '/shared/storage/images/scan0014.jpg', '#chaika-II #kodakvision2250d'), (13, '/shared/storage/images/138900663_p0.png', 'xilmo');";
+        $query = '';
+        $isBinded = false;
+        if(is_null($description)){
+            $query = $this->db->prepare("INSERT INTO posts(user_id, image) VALUES(?, ?);");
+            $isBinded = $query->bind_param("is", $userId, $image);
+        }else{
+            $query = $this->db->prepare("INSERT INTO posts(user_id, image, description) VALUES(?, ?, ?);");
+            $isBinded = $query->bind_param("iss", $userId, $image, $description);
+        }
+        if($isBinded){
+            return $query->execute();
+        }
+        return false;
     }
     public function like(int $postId, bool $status, int $userId) : bool
     {   

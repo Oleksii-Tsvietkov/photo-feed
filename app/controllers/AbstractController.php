@@ -39,10 +39,10 @@ abstract class AbstractController implements controllerable
      * Checks if user already loggin, if so - redirect to default page
      * @param bool $login boolean flag, true by default, using to switch check
      */
-    protected function checkLogin(bool $login = true) : void
+    protected function checkLogin(bool $login = true) : void    // ToDo: maybe check isset($_SESSION['user'])
     {
         session_start();
-        if(isset($_SESSION[LOGIN_FLAG]) && $_SESSION[LOGIN_FLAG] == $login){    // ToDo: check
+        if(isset($_SESSION[LOGIN_FLAG]) && $_SESSION[LOGIN_FLAG] == $login){
             Route::redirect(Route::url());
             exit();
         }
@@ -54,14 +54,13 @@ abstract class AbstractController implements controllerable
     {
         if($method){
             if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-                throw new \app\exceptions\NotAllowedException();
+                throw new \app\exceptions\NotAllowedException();    // ToDo: maybe redirect
             }
         }else{
             if($_SERVER['REQUEST_METHOD'] !== 'GET'){
                 throw new \app\exceptions\NotAllowedException();
             }
         }
-        
     }
     /**
      * Validates value, if find error - throw exception with him
@@ -72,10 +71,10 @@ abstract class AbstractController implements controllerable
      * @param bool $isNumber boolean flag for validation()
      * @return string|int if exception not thrown - returns inputed value after change and validation
      */
-    protected function validateInputedValue(string|int $value, string $type, int $min = PHP_INT_MIN, int $max = PHP_INT_MAX, bool $isNumber = false) : string|int
+    protected function validateInputedValue(string|int $value, string $type, bool $toLower = false, int $min = PHP_INT_MIN, int $max = PHP_INT_MAX, bool $isNumber = false) : string|int
     {
         $value = trim($value);
-        if($type !== 'Password'){
+        if($toLower){
             $value = strtolower($value);
         }
 
