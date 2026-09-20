@@ -24,21 +24,22 @@ class Authorization extends AbstractController    // ToDo: create log out
      */
     const EMAIL_ERROR = 'An account with this email already exists. Please enter another email.';    // ToDo: this message must be showing near with email input
     /**
-     * Name of default page
+     * Name of authorization page
      */
     const DEFAULT_PAGE = 'authorization_index';
     /**
-     * Name of default page
+     * Name of registration page
      */
     const REGISTRATION_PAGE = 'authorization_registration';
     /**
-     * Name of default template
+     * Name of authorization template
      */
     const DEFAULT_TEMPLATE = 'authorization_section';
     /**
-     * Initializes property and sets to parrents construct name of layout page
+     * Returns instance of this class from parent method, initializes property model if it not initialized
+     * @param static returns instance of this class
      */
-    public static function getInstance() : static    // ToDo: check
+    public static function getInstance() : static    
     {
         $instance = parent::getInstance();
         if(!isset($instance->model)){
@@ -48,18 +49,20 @@ class Authorization extends AbstractController    // ToDo: create log out
     }
     /**
      * Checks if whether the user is logged in, retrieves params, adds to them title and template names and calls method to render login page with those params
+     * @param array $params optional params to be added to render method, empty array by default
      */
     public function index(array $params = []) : void
     {
         $this->checkLogin(true);
         
-        $params['title'] = 'Welcome';   
-        $params['templateName'] = self::DEFAULT_TEMPLATE;   
-
+        $params += [
+            'title' => 'Welcome',
+            'templateName' => self::DEFAULT_TEMPLATE,
+        ];
         $this->view->render(self::DEFAULT_PAGE, $params);
     }
     /**
-     * Checks method being used and whether the user is logged in, receives user values from post, validates it and trying to find that user in db table, if find - login that user and redirect to default page, if error happen - return to login page with inputed values and error message
+     * Checks method being used and whether the user is logged in, receives user values from post, validates it and trying to find that user in database table, if find - login that user and redirect to default page, if error occurs - return to login page with inputtedvalues and error message
      */
     public function login() : void
     {
@@ -89,16 +92,19 @@ class Authorization extends AbstractController    // ToDo: create log out
     }
     /**
      * Checks if whether the user is logged in, retrieves params, adds to them title name and calls method to render registration page with those params
+     * @param array $params optional params to be added to render method, empty array by default
      */
     public function registration(array $params = []) : void
     {
         $this->checkLogin(true);
 
-        $params['title'] = 'Registration';
+        $params += [
+            'title' => 'Registration',
+        ];
         $this->view->render(self::REGISTRATION_PAGE, $params); 
     }
     /**
-     * Checks method being used and whether the user is logged in, receives user values from post, validates it, checks if unique and trying to add user in db table, if error happen return to registration page with inputed values and error message, in event of success login new user and redirect to default page
+     * Checks method being used and whether the user is logged in, receives user values from POST, validates it, checks if unique and trying to add user in db table, if error happen return to registration page with inputtedvalues and error message, in event of success login new user and redirect to default page
      */
     public function store() : void
     {
@@ -120,11 +126,10 @@ class Authorization extends AbstractController    // ToDo: create log out
             
             $this->checkUnique($email, self::EMAIL_ERROR);
             $this->checkUnique($login, self::USERNAME_ERROR);
-
-            if($this->model->add($email, $login, $pass)){
+            
+            if(!$this->model->add($email, $login, $pass)){
                 throw new \InvalidArgumentException(self::LOGIN_ERROR);
             }
-            
             $this->loginUser($this->model->getUser($login), true);   
         }catch (\InvalidArgumentException $e){
             $this->registration([
@@ -147,7 +152,7 @@ class Authorization extends AbstractController    // ToDo: create log out
         $this->loginUser(null, false);
     }
     /**
-     * Login or logout user, depending on inputed values
+     * Login or logout user, depending on inputtedvalues, finally redirect do default page
      * @param ?array $user array of user data or null
      * @param bool $login boolean flag, true if login, false if logout
      */
@@ -155,16 +160,25 @@ class Authorization extends AbstractController    // ToDo: create log out
     {
         session_start();
         $_SESSION[LOGIN_FLAG] = $login;
-        $_SESSION['user'] = $user;    // ToDo: add only certain data
+        if($user != null){
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'login' => $user['login'],
+                'email' => $user['email'],
+                'image' => $user['image'],
+            ];
+        }else{
+            unset($_SESSION['user']);
+        }
 
         Route::redirect(Route::url());
     }
     /**
      * Checks if value unique in database table, if not - throw exception with message
-     * @param string|int $value value to be checked, it can be login or email of user
-     * @param string $message, certain message for inputed value
+     * @param string $value value to be checked, can be login or email of user
+     * @param string $message certain message to be added in thrown exception
      */
-    private function checkUnique(string|int $value, string $message) : void
+    private function checkUnique(string $value, string $message) : void
     {
         $result = $this->model->getUser($value); 
         if(!empty($result)){

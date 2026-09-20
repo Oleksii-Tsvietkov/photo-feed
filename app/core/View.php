@@ -33,23 +33,51 @@ class View    // ToDo: add static?
         unset($params);
         include_once $this->getLayoutPath();
     }
-    public function getLikeUrl(int $id, int $page, int $count, bool $status, string $anchor) : string
+    /**
+     * Returns url to "like" method with inputted values 
+     * @param int $id post id
+     * @param int $page number of current page
+     * @param bool $status status of "like"
+     * @param string $anchor anchor of post
+     * @return string returns url to "like" method with inputted values 
+     */
+    public function getLikeUrl(int $id, int $page, bool $status, string $anchor) : string
     {
-        return Route::url("index", "like", ["id" => $id, "page" => $page, "count" => $count, "status" => $status, "anchor" => "$anchor"]);
+        return Route::url("index", "like", ["id" => $id, "page" => $page, "status" => $status, "anchor" => "$anchor"]);
     }
-    public function getPageUrl($page)
+    /**
+     * Returns url to inputted page
+     * @param int $page number of page
+     * @return string url to inputed page
+     */
+    public function getPageUrl(int $page)
     {
         return Route::url("index", "index", ["page" => $page]);
     }
-    public function getLike(bool $like) : string    // ToDo: change png to svg because theme can be changed
+    /**
+     * Returns path to certain image depending on inputted value
+     * @param bool $like boolean flag
+     * @return string path to certain image
+     */
+    public function getLike(bool $like) : string    // ToDo: change png to svg
     {
         return $like ? $this->getResourcesPath("like-pressed.png") : $this->getResourcesPath("like-default.png");
     }
+    /**
+     * Returns formatted string date of inputted TimeStamp date
+     * @param string $date string value of TimeStamp type from database 
+     * @return string formatted string date
+     */
     public function getDateTime(string $date)
     {
         $correctDate = new \DateTime($date);
         return $correctDate->format('Y-m-d\TH:i');
     }
+    /**
+     * Returns text format of inputted date
+     * @param string $date string value of TimeStamp type from database 
+     * @return string text format (day, month) of inputted date
+     */
     public function getTextDate(string $date)
     {
         $dateTime = new \DateTime($date);
@@ -63,13 +91,16 @@ class View    // ToDo: add static?
         );
         return $formatter->format($dateTime); 
     }
+    /**
+     * Return time interval mid inputted between current date with ceil date
+     * @param string $date string value of TimeStamp type from database 
+     * @return string returns time interval mid inputted between current date with ceil date(weeks, days, hours, minutes, seconds)
+     */
     public function getTimeInterval(string $date) : string
     {
         $inputDate = new \DateTime($date);
-        $currentDate = new \DateTime();    // ToDo: fix time zone
-
+        $currentDate = new \DateTimeImmutable();    // ToDo: fix time zone
         $interval = date_diff($inputDate, $currentDate);
-
         $returnInterval = '';
         if($interval->d > 7){
             $returnInterval = intval($interval->d / 7) . ' week.';
@@ -77,20 +108,19 @@ class View    // ToDo: add static?
             $returnInterval = $interval->d . ' d.';
         }else if($interval->h >= 1){
             $returnInterval = $interval->h . ' h.';
-        }else if($interval->m >= 1){
-            $returnInterval = $interval->h . ' m.';
+        }else if($interval->i >= 1){
+            $returnInterval = $interval->i . ' m.';
         }else {
             $returnInterval = $interval->s . ' s.';
         }
-        
-        return $returnInterval;   // ToDo: fix
+        return $returnInterval;
     }
     /**
-     * Returns certain text depending on inputet title name
+     * Returns certain text depending on inputted title
      * @param string $title title name
-     * @return string return site description if title name matches with switch case, else - return empty string
+     * @return string return site description if title matches with switch case, else - return empty string
      */
-    public function getDescription($title) : string    // ToDo: change
+    public function getDescription(?string $title) : string
     { 
         $description = '';
         switch($title){
@@ -107,7 +137,7 @@ class View    // ToDo: add static?
                 $description = MAIN_DESCRIPTION;
                 break;
             default:
-                // ToDo: excetion
+                // ToDo: exception?
             break;
         }
         return $description;
@@ -172,8 +202,4 @@ class View    // ToDo: add static?
     {
         return DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . $fileName;
     }
-    // public function getAvatarsPath(string $fileName) : string
-    // {
-    //     return $this->getStorageDir() . 'users_avatars' . DIRECTORY_SEPARATOR . $fileName;
-    // }
 }

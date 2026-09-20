@@ -15,8 +15,8 @@ try{
     \app\core\Route::init();
 }catch (\app\exceptions\NotAllowedException $e){
     http_response_code($e->getCode());
-    exit(); //???
+    exit();
 }catch (\app\exceptions\ConnectionException $e){
     http_response_code($e->getCode());
-    exit(); //???
+    exit();
 }

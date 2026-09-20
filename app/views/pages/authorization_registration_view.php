@@ -6,9 +6,9 @@
                 <?php include_once $this->getTemplatesPath("error_message")?>
             <?php endif; ?>
             <label for="user-email">Email</label>
-            <input type="email" id="user-email" name="email" minlength="<?= EMAIL_MIN?>" maxlength="<?= EMAIL_MAX?>" value="<?= $email ?? ''?>" placeholder="Email" autocomplete autofocus required>
+            <input type="email" id="user-email" name="email" minlength="<?= EMAIL_MIN?>" maxlength="<?= EMAIL_MAX?>" value="<?= $email ?? ''?>" placeholder="Email" autocomplete="on" autofocus required>
             <label for="user-login">Login</label> 
-            <input type="text" id="user-login" name="login" minlength="<?= LOGIN_MIN?>" maxlength="<?= LOGIN_MAX?>" value="<?= $login ?? ''?>" placeholder="User name" autocomplete required>
+            <input type="text" id="user-login" name="login" minlength="<?= LOGIN_MIN?>" maxlength="<?= LOGIN_MAX?>" value="<?= $login ?? ''?>" placeholder="User name" autocomplete="on" required>
             <label for="user-pass">Password</label>
             <input type="password" id="user-pass" name="pass" minlength="<?= PASS_MIN?>" maxlength="<?= PASS_MAX?>" value="<?= $pass ?? ''?>" placeholder="Password" required></input>
             <label for="user-pass-conf">Confirm Password</label>

@@ -52,13 +52,14 @@ class Route
         $controller->$action();
     }
     /**
-     * Checks if user logged in
-     * @v
+     * Checks if user logged in, if not - change controller on another
+     * @param string $controller name of controller
+     * @return string inputted or changed controller
      */
     private static function checkLogin(string $controller) : string
     {
         session_start();
-        if(!isset($_SESSION[LOGIN_FLAG]) || !$_SESSION[LOGIN_FLAG]){    // ToDo: check
+        if(!isset($_SESSION[LOGIN_FLAG]) || !$_SESSION[LOGIN_FLAG]){
             $controller = self::AUTHORIZATION_CONTROLLER;
         }
         return $controller;
@@ -67,14 +68,18 @@ class Route
      * Returns url with get params controller, action and some optional variables
      * @var string $controller name of controller, have default value
      * @var string $action name of action, have default value
-     * @var array $params optional assoc array with some variables, empty by default
+     * @var array $params optional params to be added to string, empty by default
      * @return string url with two get params and some optional variables
      */ 
     public static function url(string $controller = self::DEFAULT_CONTROLLER, string $action = self::DEFAULT_ACTION, array $params = []) : string
     {
         $getParams = '';
         foreach($params as $param => $value){
-            $getParams .= '&' . $param . '=' . $value;    // ToDo: & - was changed, check
+            if(strstr($value, '#')){
+                $getParams .= $value;
+            }else{
+                $getParams .= $param . '=' . $value . '&';    
+            }
         }
         return '/?controller=' . strtolower($controller) . '&action=' . strtolower($action) . '&' . $getParams;
     }
@@ -82,7 +87,7 @@ class Route
      * Calls header() with Location
      * @var string $url url to redirect, null by default
      */
-    public static function redirect(string $url = null)// : never   // must not have return type
+    public static function redirect(string $url = null)
     {
         header('Location: ' . $url ?? '/');
     }

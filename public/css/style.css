@@ -8,6 +8,7 @@
     --blue: #1a74e3;
     --lgh-blue: #2d83ed;
     --drk-blue: #133b6e;
+    --drk-border: 1px solid var(--drk-gray);
 }
 :any-link{
     text-decoration: none;
@@ -33,13 +34,21 @@ main{
     display: grid;
     justify-content: center;
 }
+.flx{
+    display: flex;
+}
+main>div, section, article{
+    flex-direction: column;
+}
+.cntr{
+    align-items: center;
+}
 main>div{
+    display: flex;
     background-color: var(--pg-bcgr);
     box-sizing: border-box;
     padding-inline: 3%;
     padding-block: 6%;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     h2{
         font-size: 22px;
@@ -49,17 +58,15 @@ body main:has(section){
     grid-template-columns: 60% 40%;
     div{
         align-items: normal;
-        border-left: 1px solid var(--drk-gray);
+        border-left: var(--drk-border);
     }
 }
 body:has(section) footer{
     background-color: var(--body-bcgr);
-    border-top: 1px solid var(--drk-gray);
+    border-top: var(--drk-border);
 }
 footer{
     height: 60px;
-    display: flex;
-    align-items: center;
     justify-content: center;
     box-sizing: border-box;
     background-color: var(--pg-bcgr);
@@ -68,13 +75,9 @@ section{
     min-width: 500px;
     padding: 3%;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: space-between;
     header{
         padding-bottom: 5%;
-        display: flex;
         h1{
             padding-inline: 5%;
             padding-top: 7%;
@@ -91,33 +94,29 @@ section{
         height: 350px;
         width: 450px;
     }
-}  
-#error-message{
+}
+.error-message{
         margin-bottom: 30px;
         height: 40px;
-        border: 1px solid var(--drk-gray);
+        border: var(--drk-border);
         border-radius: 16px;
         width: auto;
-        display: flex;
-        align-items: center;
+        padding-inline: 20px;
         img{
-            margin-left: 20px;
             margin-right: 5px;
             width: 17px;
             height: 17px;
         }
     }
 main div form{
-    #registr-button, input{
+    .registr-button, input{
         border-radius: 16px;
     }
-    #registr-button{
+    .registr-button{
         width: auto;
-        display: flex;
-        align-items: center;
     }
     input{
-        border: 1px solid var(--drk-gray);
+        border: var(--drk-border);
         height: 60px;
         background-color: var(--pg-bcgr);
         margin-top: 12px;
@@ -134,15 +133,14 @@ main div form{
     input[type="submit"]:hover{
         background-color: var(--lgh-blue);
     }
-    /*rename*/
-    #registr-button{
+    .registr-button{
         height: 40px;
         margin-top: 100px;
         border: 1px solid var(--blue);
         color: var(--blue);
         justify-content: center;
     }
-    #registr-button:hover{
+    .registr-button:hover{
         background-color: var(--lgh-pg-bcgr);
     }
 }
@@ -185,14 +183,9 @@ main div form{
     display: flex;
     flex-direction: column;
 }
-#feed-header>div, #feed-header>a{
-    display: flex;
-    align-items: center;
-}
-#feed-header{
+.feed-header{
     background-color: var(--pg-bcgr);
     height: 75px;
-    display: flex;
     justify-content: space-between;
     padding: 0 37px 0;
     img{
@@ -208,7 +201,7 @@ main div form{
         a{
             padding: 0 12px;
             color: var(--txt-color);
-            border: 1px solid var(--drk-gray);
+            border: var(--drk-border);
             border-radius: 8px;
         }
         #add-button{
@@ -229,14 +222,10 @@ main>#feed-div{
     padding: 50px 0 0 0;
 }
 article{
-    display: flex;
-    flex-direction: column;
-    padding-top: 15px;
-    #head{
+    padding-top: 10px;
+    .head{
         height: fit-content;
         padding: 0 14px 12px;
-        display: flex;
-        align-items: center;
         span{
             margin-left: 10px;
         }
@@ -248,15 +237,14 @@ article{
         time{
             color: var(--gray);
             line-height: 18px;
+            cursor: pointer;
         }
     }
     #bottom{
         margin-block: 10px 35px;
         padding-inline: 14px;
         span{
-            display: flex;
             width: fit-content;
-            align-items: center;
             font-size: 19px;        
         }
         p{
@@ -268,27 +256,23 @@ article>img{
     object-fit: cover;
     width: 100%;
 }
-#like{
+.like{
+    color: var(--txt-clr);
     img{
         height: 24px;
     }
     img:active{
         transform: scale(0.90);       
     }
-    color: var(--txt-clr);
-    display: flex;
-    align-items: center;
 }
 nav{
     width: stretch;
-    display: flex;
     justify-content: center;
     height: 55px;    /* ToDo: fix nav height*/
     overflow: hidden;
-    align-items: center;
     padding: 2px;
+    margin-bottom: 12px;
     ul{
-        display: flex;
         list-style: none;
         margin: 0;
         padding: 0;
@@ -303,7 +287,7 @@ nav{
         }
         a{
             color: var(--txt-clr);
-            border: 1px solid var(--drk-gray);
+            border: var(--drk-border);
             border-radius: 50%;
             box-sizing: border-box;
         }
@@ -338,12 +322,10 @@ main:has(#creation-header){
 .btn:active{
     transform: scale(0.98);
 }
-#create-post{
-    /*display: flex;*/
+.create-post{
     padding: 0;
     justify-content: center;
     form{
-        align-items: center;
         input[type="file"]{
             display: none;
         }

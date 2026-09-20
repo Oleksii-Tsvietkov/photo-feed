@@ -1,5 +1,5 @@
-<section>
-    <header>
+<section class="flx cntr">
+    <header class="flx">
         <?php include_once $this->getTemplatesPath("logo_img")?>
         <h1>See the moments from their lives that your close friends have shared.</h1>
     </header>

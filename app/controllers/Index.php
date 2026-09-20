@@ -23,7 +23,6 @@ class Index extends AbstractController
      * Name of creation template file
      */
     const CREATION_TEMPLATE = 'creation_header';
-
     /**
      * Error message, showing if error happened during add like
      */
@@ -32,7 +31,10 @@ class Index extends AbstractController
      * Error message, showing if error happened during add post
      */
     const POST_ERROR = 'Some problems during add post.';
-
+    /**
+     * Returns instance of this class from parent method, initializes property model if it not initialized
+     * @param static returns instance of this class
+     */
     public static function getInstance() : static
     {
         $instance = parent::getInstance();
@@ -41,31 +43,40 @@ class Index extends AbstractController
         }
         return $instance;
     }
+    /**
+     * Checks method being used and whether the user is logged in, receives pagination params, array of posts, and user data, calls method to render default page with those params
+     * @param array $params optional params to be added to render method, empty array by default
+     */
     public function index(array $params = []) : void
     {
         $this->checkMethod(false);
         $this->checkLogin(false);
         
+        //$currentPage = $_GET['currentPage'] ?? null;    // ToDo: temporary solution before replace like method
         if($params !== []){
             extract($params);
         }
         if(!isset($currentPage)){
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         }
-        
-        extract($this->model->getLimit($currentPage));
+
         extract($this->model->getButtonsCount($currentPage));
-        $params['posts'] = $this->model->getPosts($_SESSION['user']['id'], $offset, $limit);
         session_start();
-        $params['user'] = $_SESSION['user'];
-        $params['templateName'] = self::DEFAULT_TEMPLATE;    // ToDo: add all to array
-        $params['currentPage'] = $currentPage;
-        $params['pagesCount'] = $pagesCount ?? $this->model->getPagesCount();
-        $params['startPage'] = $start;
-        $params['endPage'] = $end;
+        $params += [
+            'posts' => $this->model->getPosts($_SESSION['user']['id'], $currentPage),
+            'user' => $_SESSION['user'],
+            'templateName' => self::DEFAULT_TEMPLATE,
+            'currentPage' => $currentPage,
+            'pagesCount' => $pagesCount ?? $this->model->getpagesTotal(),
+            'startPage' => $start,
+            'endPage' => $end,
+        ];
         $this->view->render(self::DEFAULT_PAGE, $params);
     }
-    public function like() : void    /* ToDo: maybe just change color. change like status only after page updating */
+    /**
+     * Checks method being used and whether the user is logged in, receives params of post from GET, validates it and trying to change "like" status in database table, if error happen return status code 422, in event of success "like" status and redirect to same page with anchor
+     */
+    public function like() : void    /* ToDo: maybe just change color and change like status only after page updating or replace method to post */
     {
         $this->checkMethod(false);
         $this->checkLogin(false);
@@ -73,34 +84,29 @@ class Index extends AbstractController
         $postId = filter_input(INPUT_GET, 'id');
         $currentPage = filter_input(INPUT_GET, 'page');
         $likeStatus = filter_input(INPUT_GET, 'status');
-        $pagesCount = filter_input(INPUT_GET, 'count');
-        $anchor = $_GET['anchor'];
-
+        $anchor = filter_input(INPUT_GET, 'anchor');
         try{
             $postId = $this->validateInputedValue($postId, 'postId', false, 0, PHP_INT_MAX, true);
-            $pagesCount = $this->validateInputedValue($pagesCount, 'pagesCount', false, 1, PHP_INT_MAX, true);    // ToDo: change max value?
             
             $likeStatus = intval($likeStatus);
             if($likeStatus != 1 && $likeStatus != 0){
                 throw new InvalidArgumentException('Status not boolean');
             }
             $likeFlag = boolval($likeStatus); 
-            $currentPage = $this->validateInputedValue($currentPage, 'currentPage', false, 1, $pagesCount, true);
-
             session_start();
             if(!$this->model->like($postId, $likeFlag, $_SESSION['user']['id'])){
                 throw new InvalidArgumentException(self::LIKE_ERROR);
             }
-            $this->index([
-                "currentPage" => intval($currentPage),
-                "pagesCount" => intval($pagesCount),
-                /*"anchor" => $anchor,*/    // ToDo: fix
-            ]);
+            Route::redirect(Route::url('index', 'index', ['page' => "$currentPage", "#$anchor"]));    // ToDo: temporary solution before replace 'like' method
         }catch (\InvalidArgumentException $e){
-            Route::unprocessibleEntity();    // ToDo: replace to response?
+            Route::unprocessibleEntity();    // ToDo: change for responce?
         }
         exit();
     }
+    /**
+     * Checks method being used and whether the user is logged in, receives optional params, adds to him some values and calls method to render creation page with those params
+     * @param array $params optional params to be added to render method, empty array by default
+     */
     public function create(array $params = []) : void
     {
         if($params === []){
@@ -108,11 +114,16 @@ class Index extends AbstractController
         }
         $this->checkLogin(false);
         
-        $params['title'] = 'New Post';
-        $params['templateName'] = self::CREATION_TEMPLATE;
+        $params += [
+            'title' => 'New Post',
+            'templateName' => self::CREATION_TEMPLATE,
+        ];
         $this->view->render(self::CREATION_PAGE, $params);
     }
-    public function add() : void
+    /**
+     * Checks method being used and whether the user is logged in, trying to validate inputtedfile and receive params, returns to creation page with with those params or with error message if error occured 
+     */
+    public function add() : void    // ToDo: must show preview of inputtedimage; change method after adding JS
     {
         $this->checkMethod();
         $this->checkLogin(false);
@@ -129,6 +140,9 @@ class Index extends AbstractController
         }
         exit();
     }
+    /**
+     * Checks method being used and whether the user is logged in, receives inputtedfile from POST, trying to receive and validate description and add this data to database table, if error occured - returns back to creation page with error message, in event of success redirect to default page
+     */
     public function store() : void
     {
         $this->checkMethod();
@@ -138,14 +152,14 @@ class Index extends AbstractController
         $image = filter_input(INPUT_POST, 'image');  
         $description = null;  
         try{
-            if(isset($_POST['description']) && !empty($_POST['description'])){
+            if(!empty($_POST['description'])){
                 $description = $_POST['description'];
                 $description = $this->validateInputedValue($description, 'Description', false, 1, DESCRIPTION_MAX);
             }
             session_start();
             $userId = $_SESSION['user']['id'];
 
-            $imagePath = $this->view->getImagesPath($image);
+            $imagePath = $this->view->getImagesPath($image);    // ToDo: if file almost loaded, change that after adding JS
             if(!$this->model->add($userId, $imagePath, $description)){
                 throw new InvalidArgumentException(self::POST_ERROR);
             }   
@@ -156,49 +170,5 @@ class Index extends AbstractController
             ]);
         }
         exit();
-    }
-    protected function validateFile(callable $path, string $name) : array
-    {
-        if(!isset($_FILES[$name])){
-            throw new \InvalidArgumentException('No file for upload');
-        }
-        $file = $_FILES[$name];
-        if($file['error'] !== UPLOAD_ERR_OK){
-            throw new \InvalidArgumentException(FILE_UPLOAD_ERRORS[$file['error']]);
-        }
-        if(!is_uploaded_file($_FILES[$name]['tmp_name'])){
-            throw new \InvalidArgumentException('File was uploaded using a GET method');
-        }
-        if (!str_starts_with($file['type'], AVAILABLE_TYPE)){
-            throw new \InvalidArgumentException('Not available file type')      ;
-        }
-        if($file['size'] > PHOTO_MAX_FILE_SIZE){
-            throw new \InvalidArgumentException('File too large.');
-        }
-        $fileName = $this->mkNwName($file['name']);
-        $filePath = $path($fileName);
-        if(!move_uploaded_file($file['tmp_name'], $filePath)){
-            throw new \InvalidArgumentException('Some problems during moving uploaded file');
-        }
-        return ['oldFileName' => $file['name'], 'fileName' => $fileName];    // ToDo: check
-    }
-    /**
-     * Create new file name
-     * @param string file name needed to change
-     * @return string new file name with same extension
-     */
-    private function mkNwName(string $fileName): string
-    {
-        $ext = strrchr($fileName, '.');
-        return uniqid() . $ext;
-    }
-    /**
-     * Returns path to file from images directory
-     * @param string $fileName name of file
-     * @return string path of file
-     */
-    private function getImagesDir(string $fileName) : string
-    {
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $fileName;
     }
 }

@@ -4,10 +4,10 @@ namespace app\models;
 
 use app\core\Singleton;
 
-abstract class AbstractModel    // ToDo: add singletone
+abstract class AbstractModel
 {
     /**
-     * Use trait with singletone pattern and set alias
+     * Use trait with singleton pattern and set alias
      */
     use Singleton {
         Singleton::getInstance as getInstanceSingleton;
@@ -17,11 +17,11 @@ abstract class AbstractModel    // ToDo: add singletone
      */
     protected $db;
     /**
-     * Gets instance of this class from getInstance(), if db connection not exists trying to create it, throw error if connection error happen, ultimately returns instance of this class
-     * @param string $name name of data base to db connect
-     * @param string $host name of host to db connect 
-     * @param string $user user login to db connect
-     * @param string $pass user pass to db connect
+     * Gets instance of this class from method of singleton trait, if database connection not exists trying to create it, throw error if connection error occurs, ultimately returns instance of this class
+     * @param string $name name of database
+     * @param string $host name of host
+     * @param string $user user login
+     * @param string $pass user pass
      * @return static instance of this class
      */
     public static function getInstance(string $name = DB_NAME, string $host = DB_HOST, string $user = DB_USER, string $pass = DB_PASS) : static

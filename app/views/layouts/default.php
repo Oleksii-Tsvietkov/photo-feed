@@ -20,6 +20,6 @@
         <?php if(isset($title)): // ToDo: temporary solution?>
             </main>
         <?php endif; ?>
-        <footer>&copy;Alex Walker</footer>
+        <footer class="flx cntr">&copy;Alex Walker</footer>
     </body>
 </html>

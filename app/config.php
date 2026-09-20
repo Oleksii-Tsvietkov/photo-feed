@@ -24,7 +24,6 @@ const CREATE_DESCRIPTION = "Upload your photos easily. Share your favorite momen
 const AVAILABLE_TYPE = 'image/';
 const PHOTO_MAX_FILE_SIZE = 60000000;
 const FILE_UPLOAD_ERRORS = [
-    //0 => 'There is no error, the file uploaded with success',    // ToDo: maybe not need
     1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
     2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
     3 => 'The uploaded file was only partially uploaded',
