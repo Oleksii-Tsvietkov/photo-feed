@@ -5,7 +5,7 @@ const SITE_NAME = 'Photo Feed';
 const DB_HOST = 'MySQL-8.4:3306';
 const DB_USER = 'root';
 const DB_PASS = '';
-const DB_NAME = 'photo_feed_db';
+const DB_NAME = 'test_photo_feed';
 
 const LOGIN_FLAG = 'logged_in';
 const PASS_MIN = 8;

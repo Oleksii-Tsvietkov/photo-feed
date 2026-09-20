@@ -223,6 +223,7 @@ main>#feed-div{
 }
 article{
     padding-top: 10px;
+    min-width: 468px;
     .head{
         height: fit-content;
         padding: 0 14px 12px;
