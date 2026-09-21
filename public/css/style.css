@@ -240,7 +240,7 @@ article{
             cursor: pointer;
         }
     }
-    #bottom{
+    .bottom{
         margin-block: 10px 35px;
         padding-inline: 14px;
         span{

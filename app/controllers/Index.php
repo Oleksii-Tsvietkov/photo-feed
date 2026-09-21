@@ -63,6 +63,7 @@ class Index extends AbstractController
         extract($this->model->getButtonsCount($currentPage));
         session_start();
         $params += [
+            'title' => '',
             'posts' => $this->model->getPosts($_SESSION['user']['id'], $currentPage),
             'user' => $_SESSION['user'],
             'templateName' => self::DEFAULT_TEMPLATE,

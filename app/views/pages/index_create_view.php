@@ -1,5 +1,5 @@
 <div class="create-post cntr">
-    <a href="<?= app\core\Route::url("authorization", "index")?>" id="button" tabindex="-1"><img src="<?= $this->getResourcesPath("left-arrow.png")?>" alt="Left arrow" label="Back" tabindex="-1"></a><!-- ToDo: if user changing mind about creating post - delete loaded photo or preview -->
+    <a href="<?= app\core\Route::url("authorization", "index")?>" id="button" tabindex="-1"><img src="<?= $this->getResourcesPath("left-arrow.png")?>" alt="Left arrow" title="Back" tabindex="-1"></a><!-- ToDo: if user changing mind about creating post - delete loaded photo or preview -->
     <?php if(!isset($inputedImage)): ?>
         <div id="adding-logo">
             <img src="<?= $this->getResourcesPath("photo-add-logo.png")?>" alt="Image of media">
