@@ -1,6 +1,6 @@
 <div>
     <div id="registration-page">
-        <a href="<?= app\core\Route::url("authorization", "index")?>" id="button" ><img src="<?= $this->getResourcesPath("left-arrow.png")?>" alt="Left arrow" label="Back"></a>
+        <a href="<?= app\core\Route::url("authorization", "index")?>" id="button" ><img src="<?= $this->getResourcesPath("left-arrow.png")?>" alt="Left arrow" title="Back"></a>
         <form action="<?= app\core\Route::url("authorization", "store")?>" method="post" enctype="multipart/form-data">
             <?php if(isset($errorMessage)): ?>
                 <?php include_once $this->getTemplatesPath("error_message")?>

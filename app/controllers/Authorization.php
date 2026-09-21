@@ -80,6 +80,7 @@ class Authorization extends AbstractController    // ToDo: create log out
             if(is_null($result)){
                 throw new \InvalidArgumentException(self::LOGIN_ERROR);
             }
+            unset($result['password']);
             $this->loginUser($result, true);    
         }catch (\InvalidArgumentException $e){
             $this->index([
@@ -130,7 +131,9 @@ class Authorization extends AbstractController    // ToDo: create log out
             if(!$this->model->add($email, $login, $pass)){
                 throw new \InvalidArgumentException(self::LOGIN_ERROR);
             }
-            $this->loginUser($this->model->getUser($login), true);   
+            $user = $this->model->getUser($login);
+            unset($user['password']);
+            $this->loginUser($user, true);   
         }catch (\InvalidArgumentException $e){
             $this->registration([
                 'errorMessage' => $e->getMessage(),
@@ -160,16 +163,7 @@ class Authorization extends AbstractController    // ToDo: create log out
     {
         session_start();
         $_SESSION[LOGIN_FLAG] = $login;
-        if($user != null){
-            $_SESSION['user'] = [
-                'id' => $user['id'],
-                'login' => $user['login'],
-                'email' => $user['email'],
-                'image' => $user['image'],
-            ];
-        }else{
-            unset($_SESSION['user']);
-        }
+        $_SESSION['user'] = $user;
 
         Route::redirect(Route::url());
     }

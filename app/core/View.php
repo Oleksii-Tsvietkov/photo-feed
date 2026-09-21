@@ -133,7 +133,7 @@ class View    // ToDo: add static?
             case 'New post':
                 $description = CREATE_DESCRIPTION;
                 break;
-            case null:
+            case '':
                 $description = MAIN_DESCRIPTION;
                 break;
             default:

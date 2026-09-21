@@ -4,14 +4,14 @@
             <?php foreach($posts as $key => $post): ?>
                 <article class="flx" id="post<?=$key?>">
                     <div class="head flx cntr">
-                        <img src="<?= $post['user_image']?>" alt="User avatar"><span><?= $post['username']?></span>
+                        <img src="<?= $post['user_image']?>" alt="Avatar of user <?= $post['username']?>" loading="lazy"><span><?= $post['username']?></span>
                         <time datetime="<?= $this->getDateTime($post['date'])?>" title="<?= $this->getTextDate($post['date'])?>">&nbsp;•&nbsp;<?= $this->getTimeInterval($post['date'])?></time>
                     </div>
-                    <img src="<?= $post['image']?>" alt="User photo">
-                    <div id="bottom">
+                    <img src="<?= $post['image']?>" alt="Photo published by user <?= $post['username']?>" loading="lazy">
+                    <div class="bottom">
                         <span class="flx cntr">
                             <a href="<?= $this->getLikeUrl($post['id'], $currentPage, $post['like_status'], "post$key")?>" class="like flx cntr">
-                                <img src="<?= $this->getLike($post['like_status'])?>" alt="Like">&nbsp;<?= $post['likes_count'] == 0 ? '' : $post['likes_count'] ?>
+                                <img src="<?= $this->getLike($post['like_status'])?>" alt="Like image on a <?= $post['username']?>'s post" loading="lazy">&nbsp;<?= $post['likes_count'] == 0 ? '' : $post['likes_count'] ?>
                             </a>
                         </span>
                         <p><?= $post['description']?></p>
