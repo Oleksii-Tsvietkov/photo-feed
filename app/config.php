@@ -8,6 +8,7 @@ const DB_PASS = '';
 const DB_NAME = 'test_photo_feed';
 
 const LOGIN_FLAG = 'logged_in';
+const USER_FLAG = 'user';
 const PASS_MIN = 8;
 const PASS_MAX = 20;
 const LOGIN_MIN = 3;

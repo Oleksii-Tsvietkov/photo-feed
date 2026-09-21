@@ -42,7 +42,7 @@ abstract class AbstractController implements controllerable
     protected function checkLogin(bool $isLogin = true) : void
     {
         session_start();
-        if(isset($_SESSION[LOGIN_FLAG]) && $_SESSION[LOGIN_FLAG] == $isLogin){
+        if(isset($_SESSION[LOGIN_FLAG]) && $_SESSION[LOGIN_FLAG] == $isLogin && isset($_SESSION['user']) == $isLogin){    // check conditions
             Route::redirect(Route::url());
             exit();
         }
@@ -148,7 +148,7 @@ abstract class AbstractController implements controllerable
      */
     protected function getImagesDir(string $fileName) : string
     {
-        return dirname(__DIR__) . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $fileName;
+        return dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $fileName;
     }
     /**
      * Returns new file name

@@ -148,7 +148,7 @@ class Index extends AbstractController
     {
         $this->checkMethod();
         $this->checkLogin(false);
-
+        
         // ToDo: validate input file if it not almost loaded
         $image = filter_input(INPUT_POST, 'image');  
         $description = null;  

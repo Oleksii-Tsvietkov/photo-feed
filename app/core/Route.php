@@ -59,7 +59,7 @@ class Route
     private static function checkLogin(string $controller) : string
     {
         session_start();
-        if(!isset($_SESSION[LOGIN_FLAG]) || !$_SESSION[LOGIN_FLAG]){
+        if(!isset($_SESSION[LOGIN_FLAG]) || !$_SESSION[LOGIN_FLAG] || !isset($_SESSION[USER_FLAG])){
             $controller = self::AUTHORIZATION_CONTROLLER;
         }
         return $controller;

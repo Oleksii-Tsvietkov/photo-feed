@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: MySQL-8.4:3306
--- Generation Time: Sep 21, 2026 at 12:26 AM
+-- Generation Time: Sep 21, 2026 at 08:59 PM
 -- Server version: 8.4.8
 -- PHP Version: 8.5.4
 
@@ -38,7 +38,8 @@ CREATE TABLE `likes` (
 --
 
 INSERT INTO `likes` (`id`, `post_id`, `user_id`) VALUES
-(99, 50, 16);
+(101, 57, 16),
+(100, 58, 16);
 
 -- --------------------------------------------------------
 
@@ -60,12 +61,12 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `user_id`, `image`, `description`, `published_at`, `likes_id`) VALUES
-(46, 16, '\\shared\\images\\6ab058a325496.jpg', 'Sample image', '2026-09-20 22:05:35', NULL),
-(47, 16, '\\shared\\images\\6ab058cdabe2b.jpg', 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illo, molestias pariatur neque vitae vero voluptatibus ea, qui sed dignissimos odit nulla debitis illum adipisci nesciunt itaque accusamus ipsam numquam magnam, cupiditate quas obcaecati explicabo.', '2026-09-20 22:06:44', NULL),
-(48, 16, '\\shared\\images\\6ab0591e957f4.jpg', NULL, '2026-09-20 22:07:28', NULL),
-(49, 16, '\\shared\\images\\6ab0595b02ba0.jpg', 'Sample text', '2026-09-20 22:08:33', NULL),
-(50, 16, '\\shared\\images\\6ab05a935e675.jpg', NULL, '2026-09-20 22:13:40', NULL),
-(51, 16, '\\shared\\images\\6ab05ad892a83.jpg', NULL, '2026-09-20 22:14:50', NULL);
+(54, 16, '\\shared\\images\\6ab17c2ef1080.jpg', 'sample text', '2026-09-21 18:49:24', NULL),
+(55, 16, '\\shared\\images\\6ab17c8792d1a.jpg', NULL, '2026-09-21 18:50:49', NULL),
+(56, 16, '\\shared\\images\\6ab17c9372e4e.jpg', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt ratione tempore quos magni quod, dolore maxime dolores ab fugiat consectetur, dolorem ipsum unde pariatur veniam dignissimos! Porro animi odio laboriosam beatae amet expedita sint explicabo', '2026-09-21 18:51:47', NULL),
+(57, 16, '\\shared\\images\\6ab17cf06ae8b.jpg', NULL, '2026-09-21 18:52:34', NULL),
+(58, 16, '\\shared\\images\\6ab17d3a48ee8.jpg', NULL, '2026-09-21 18:53:47', NULL),
+(59, 16, '\\shared\\images\\6ab17d5c3b968.jpg', 'text', '2026-09-21 18:54:21', NULL);
 
 -- --------------------------------------------------------
 
@@ -124,13 +125,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `users`
