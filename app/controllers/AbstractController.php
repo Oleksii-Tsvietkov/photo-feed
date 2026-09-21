@@ -42,7 +42,7 @@ abstract class AbstractController implements controllerable
     protected function checkLogin(bool $isLogin = true) : void
     {
         session_start();
-        if(isset($_SESSION[LOGIN_FLAG]) && $_SESSION[LOGIN_FLAG] == $isLogin && isset($_SESSION['user']) == $isLogin){    // check conditions
+        if(isset($_SESSION[LOGIN_FLAG]) && $_SESSION[LOGIN_FLAG] == $isLogin && isset($_SESSION[USER_FLAG]) == $isLogin){    // check conditions
             Route::redirect(Route::url());
             exit();
         }

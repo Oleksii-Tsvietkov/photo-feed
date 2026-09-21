@@ -64,8 +64,8 @@ class Index extends AbstractController
         session_start();
         $params += [
             'title' => '',
-            'posts' => $this->model->getPosts($_SESSION['user']['id'], $currentPage),
-            'user' => $_SESSION['user'],
+            'posts' => $this->model->getPosts($_SESSION[USER_FLAG]['id'], $currentPage),
+            USER_FLAG => $_SESSION[USER_FLAG],
             'templateName' => self::DEFAULT_TEMPLATE,
             'currentPage' => $currentPage,
             'pagesCount' => $pagesCount ?? $this->model->getpagesTotal(),
@@ -95,7 +95,7 @@ class Index extends AbstractController
             }
             $likeFlag = boolval($likeStatus); 
             session_start();
-            if(!$this->model->like($postId, $likeFlag, $_SESSION['user']['id'])){
+            if(!$this->model->like($postId, $likeFlag, $_SESSION[USER_FLAG]['id'])){
                 throw new InvalidArgumentException(self::LIKE_ERROR);
             }
             Route::redirect(Route::url('index', 'index', ['page' => "$currentPage", "#$anchor"]));    // ToDo: temporary solution before replace 'like' method
@@ -158,7 +158,7 @@ class Index extends AbstractController
                 $description = $this->validateInputedValue($description, 'Description', false, 1, DESCRIPTION_MAX);
             }
             session_start();
-            $userId = $_SESSION['user']['id'];
+            $userId = $_SESSION[USER_FLAG]['id'];
 
             $imagePath = $this->view->getImagesPath($image);    // ToDo: if file almost loaded, change that after adding JS
             if(!$this->model->add($userId, $imagePath, $description)){

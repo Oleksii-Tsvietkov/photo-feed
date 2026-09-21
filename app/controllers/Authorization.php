@@ -150,9 +150,8 @@ class Authorization extends AbstractController    // ToDo: create log out
      */
     public function logout() : void
     {
-        $this->checkLogin(false);
-
         $this->loginUser(null, false);
+        $this->checkLogin(false);
     }
     /**
      * Login or logout user, depending on inputtedvalues, finally redirect do default page
